@@ -36,11 +36,11 @@ jobs:
           APP_ARCH: 'x64'
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-zip
-          path: dist/*.zip | dist/*.msi
+      #    - name: Archive production artifacts
+      #      uses: actions/upload-artifact@v4
+      #      with:
+      #        name: dist-zip
+      #        path: dist/*.zip | dist/*.msi
 
       - name: make dir for upload
         run: mkdir upload
@@ -51,7 +51,7 @@ jobs:
 
       - name: Copy only all zip-files to upload
         if: matrix.os == 'windows-latest'
-        run: copy dist\*.zip upload
+        run: copy dist\*.exe upload
 
       - name: list all files in upload
         if: matrix.os == 'windows-latest'
