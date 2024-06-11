@@ -21,6 +21,7 @@ win:
   executableName: ragna-desktop
   target:
     - nsis
+    - msi
     - zip
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
