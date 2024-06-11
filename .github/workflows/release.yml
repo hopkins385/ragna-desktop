@@ -28,6 +28,8 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+      - name: Build llama-cpp bins
+        run: npx --no node-llama-cpp download
 
       - name: build-win
         if: matrix.os == 'windows-latest'
@@ -45,17 +47,13 @@ jobs:
       - name: make dir for upload
         run: mkdir upload
 
-      - name: list all files in dist
-        if: matrix.os == 'windows-latest'
-        run: dir dist
+      - name: Copy dmg to upload
+        if: matrix.os == 'macos-latest'
+        run: cp dist/*.dmg upload
 
-      - name: Copy only all zip-files to upload
+      - name: Copy only exe to upload
         if: matrix.os == 'windows-latest'
         run: copy dist\*.exe upload
-
-      - name: list all files in upload
-        if: matrix.os == 'windows-latest'
-        run: dir upload
 
       - name: Upload to R2
         uses: ryand56/r2-upload-action@latest
@@ -64,7 +62,7 @@ jobs:
           r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
           r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           r2-bucket: ${{ secrets.R2_BUCKET }}
-          source-dir: upload
+          source-dir: upload/
           destination-dir: ./
 
       # - name: Create release

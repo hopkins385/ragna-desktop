@@ -3,10 +3,11 @@ productName: ragna-desktop
 directories:
   buildResources: build
 files:
+  - '!data/*'
   - '!**/.vscode/*'
   - '!src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
-  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.eslintignore,.eslintrc.cjs,.eslint.config.js,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
   # - '!node_modules/node-llama-cpp/llamaBins/*'
@@ -19,9 +20,6 @@ asarUnpack:
   - node_modules/node-llama-cpp/llama/localBuilds
 win:
   executableName: ragna-desktop
-  target:
-    - nsis
-    - msi
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -46,6 +44,6 @@ linux:
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
-npmRebuild: true
+npmRebuild: false
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
