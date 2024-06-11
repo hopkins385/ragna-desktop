@@ -40,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist-zip
-          path: dist/*.zip
+          path: dist/*.zip | dist/*.msi
 
       - name: make dir for upload
         run: mkdir upload
@@ -59,8 +59,6 @@ jobs:
 
       - name: Upload to R2
         uses: ryand56/r2-upload-action@latest
-        env:
-          NODE_OPTIONS: --max_old_space_size=4096
         with:
           r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
           r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
