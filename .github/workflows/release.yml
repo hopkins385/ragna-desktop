@@ -37,8 +37,9 @@ jobs:
       - name: make dir for upload
         run: mkdir upload
 
-      - name: Copy zip to upload
-        run: cp **/*.zip upload
+      - name: Copy only all zip-files to upload
+        if: matrix.os == 'windows-latest'
+        run: xcopy /s /y dist\*.zip upload
 
       - name: Upload to R2
         uses: ryand56/r2-upload-action@latest
