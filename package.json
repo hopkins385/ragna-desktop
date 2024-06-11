@@ -2,9 +2,11 @@
   "name": "ragna-desktop-app",
   "version": "0.1.0",
   "description": "RAGNA Desktop",
-  "main": "./out/main/index.js",
   "author": "Sven Stadhouders",
   "homepage": "https://ragna.app",
+  "private": true,
+  "license": "other",
+  "main": "./out/main/index.js",
   "type": "module",
   "scripts": {
     "format": "prettier --write .",
