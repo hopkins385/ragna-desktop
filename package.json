@@ -57,7 +57,7 @@
     "pinia-plugin-persistedstate": "^3.2.1",
     "radix-vue": "^1.8.3",
     "recursive-readdir": "^2.2.3",
-    "sqlite3": "^5.1.7",
+    "sqlite3": "^5.1.6",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "typeorm": "^0.3.20",
