@@ -34,6 +34,12 @@ jobs:
         env:
           APP_ARCH: 'x64'
 
+      - name: make dir for upload
+        run: mkdir upload
+
+      - name: Copy zip to upload
+        run: cp **/*.zip upload
+
       - name: Upload to R2
         uses: ryand56/r2-upload-action@latest
         with:
@@ -41,7 +47,7 @@ jobs:
           r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
           r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           r2-bucket: ${{ secrets.R2_BUCKET }}
-          source-dir: dist
+          source-dir: upload
           destination-dir: ./
 
       # - name: Create release
