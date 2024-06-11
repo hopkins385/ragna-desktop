@@ -1,11 +1,11 @@
-import { resolve } from 'path'
-import { defineConfig, externalizeDepsPlugin, swcPlugin } from 'electron-vite'
-import vue from '@vitejs/plugin-vue'
+import { resolve } from 'path';
+import { defineConfig, externalizeDepsPlugin, swcPlugin } from 'electron-vite';
+import vue from '@vitejs/plugin-vue';
 
-import tailwind from 'tailwindcss'
-import autoprefixer from 'autoprefixer'
+import tailwind from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 
-import svgLoader from 'vite-svg-loader'
+import svgLoader from 'vite-svg-loader';
 
 export default defineConfig({
   main: {
@@ -31,4 +31,4 @@ export default defineConfig({
       }
     }
   }
-})
+});
