@@ -1,4 +1,4 @@
-import { globalDatabaseConn } from '../database/connection'
-import { User } from '../database/entities/user.entity'
+import { globalDatabaseConn } from '../database/connection';
+import { User } from '../database/entities/user.entity';
 
-export const UserRepository = globalDatabaseConn.getRepository(User)
+export const UserRepository = globalDatabaseConn.getRepository(User);

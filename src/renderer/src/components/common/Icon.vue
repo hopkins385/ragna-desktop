@@ -5,7 +5,7 @@ import {
   PlayIcon,
   StepForwardIcon,
   SendIcon,
-  MessageSquarePlusIcon
+  MessageCirclePlusIcon
 } from 'lucide-vue-next'
 
 
@@ -21,7 +21,7 @@ function getIcon(name: string) {
     stop: StepForwardIcon,
     send: SendIcon,
     eject: StepForwardIcon,
-    newChat: MessageSquarePlusIcon,
+    newChat: MessageCirclePlusIcon,
   }[name]
 }
 </script>

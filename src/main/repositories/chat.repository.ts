@@ -1,4 +1,4 @@
-import { globalDatabaseConn } from '../database/connection'
-import { Chat } from '../database/entities/chat.entity'
+import { globalDatabaseConn } from '../database/connection';
+import { Chat } from '../database/entities/chat.entity';
 
-export const ChatRepository = globalDatabaseConn.getRepository(Chat)
+export const ChatRepository = globalDatabaseConn.getRepository(Chat);

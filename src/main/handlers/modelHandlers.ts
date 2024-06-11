@@ -1,34 +1,34 @@
-import { existsSync, mkdir, readFileSync } from 'fs'
-import { app, ipcMain } from 'electron'
-import { getAppStorage } from '../utils/store'
-import { getResourcePath } from '../utils/path'
-import { logger } from '../utils/logger'
+import { existsSync, mkdir, readFileSync } from 'fs';
+import { app, ipcMain } from 'electron';
+import { getAppStorage } from '../utils/store';
+import { getResourcePath } from '../utils/path';
+import { logger } from '../utils/logger';
 
 /**
  * Set models default path
  */
 function setModelsFolderPath(_event: Electron.IpcMainInvokeEvent | null, path: string) {
-  const store = getAppStorage()
-  store.set('models-folder-path', path)
+  const store = getAppStorage();
+  store.set('models-folder-path', path);
 }
 
 /**
  * Init Models Folder
  */
 function initModelsFolder() {
-  const homePath = app.getPath('home')
-  const folder = '/LLM-Models'
-  const folderPath = homePath + folder
+  const homePath = app.getPath('home');
+  const folder = '/LLM-Models';
+  const folderPath = homePath + folder;
   if (!existsSync(folderPath)) {
     mkdir(folderPath, { recursive: true, mode: 0o755 }, (err) => {
       if (err) {
-        logger.log('Error creating folder: %s', err)
-        throw err
+        logger.log('Error creating folder: %s', err);
+        throw err;
       }
-    })
+    });
   }
-  setModelsFolderPath(null, folderPath)
-  return folderPath
+  setModelsFolderPath(null, folderPath);
+  return folderPath;
 }
 
 /**
@@ -36,12 +36,12 @@ function initModelsFolder() {
  * is exported and used by others
  */
 export function getModelsFolderPath() {
-  const store = getAppStorage()
-  const folderPath = store.get('models-folder-path')
+  const store = getAppStorage();
+  const folderPath = store.get('models-folder-path');
   if (!folderPath) {
-    return initModelsFolder()
+    return initModelsFolder();
   }
-  return folderPath as string
+  return folderPath as string;
 }
 
 /**
@@ -49,18 +49,18 @@ export function getModelsFolderPath() {
  * is exported and used by others
  */
 export async function getModelList() {
-  const jsonFile = getResourcePath() + '/data/llmList.json'
+  const jsonFile = getResourcePath() + '/data/llmList.json';
   // check if file exists
   if (!existsSync(jsonFile)) {
-    logger.error('File does not exist at: %s', jsonFile)
-    throw new Error(`File does not exist: ${jsonFile}`)
+    logger.error('File does not exist at: %s', jsonFile);
+    throw new Error(`File does not exist: ${jsonFile}`);
   }
 
-  return readFileSync(jsonFile, 'utf8')
+  return readFileSync(jsonFile, 'utf8');
 }
 
 export function handleModelIPCs() {
-  ipcMain.handle('set-models-folder-path', setModelsFolderPath)
-  ipcMain.handle('get-models-folder-path', getModelsFolderPath)
-  ipcMain.handle('get-model-list', getModelList)
+  ipcMain.handle('set-models-folder-path', setModelsFolderPath);
+  ipcMain.handle('get-models-folder-path', getModelsFolderPath);
+  ipcMain.handle('get-model-list', getModelList);
 }

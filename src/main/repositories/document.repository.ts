@@ -1,4 +1,4 @@
-import { globalDatabaseConn } from '../database/connection'
-import { Document } from '../database/entities'
+import { globalDatabaseConn } from '../database/connection';
+import { Document } from '../database/entities';
 
-export const DocumentRepository = globalDatabaseConn.getRepository(Document)
+export const DocumentRepository = globalDatabaseConn.getRepository(Document);

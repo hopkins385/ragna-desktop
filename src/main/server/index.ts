@@ -1,12 +1,12 @@
-import express from 'express'
-import { globalInferenceService } from '../services/inference.service'
-import type { Server } from 'http'
-import { randomUUID } from 'crypto'
+import express from 'express';
+import { globalInferenceService } from '../services/inference.service';
+import type { Server } from 'http';
+import { randomUUID } from 'crypto';
 
-const inferenceService = globalInferenceService
+const inferenceService = globalInferenceService;
 
-const app = express()
-app.use(express.json())
+const app = express();
+app.use(express.json());
 
 /*
 Example body
@@ -52,11 +52,11 @@ Example chunk response (stream = true)
 */
 
 function unixTimestamp() {
-  return Math.floor(Date.now() / 1000)
+  return Math.floor(Date.now() / 1000);
 }
 
 function convertStringToHex(input: string) {
-  return Buffer.from(input).toString('hex')
+  return Buffer.from(input).toString('hex');
 }
 
 function systemFingerprint() {
@@ -64,16 +64,16 @@ function systemFingerprint() {
   // const fingerprintString = fingerprint.toString('hex')
   // return `fp_${fingerprintString}`
 
-  return convertStringToHex('ragna-desktop')
+  return convertStringToHex('ragna-desktop');
 }
 
 function randomId() {
-  return randomUUID().replace(/-/g, '').toLowerCase()
+  return randomUUID().replace(/-/g, '').toLowerCase();
 }
 
 function formatResponse(assistantContent: any, finishReason: string | null = null) {
-  const id = randomId()
-  const fingerPrint = systemFingerprint()
+  const id = randomId();
+  const fingerPrint = systemFingerprint();
   return {
     id: `chatcmpl-${id}`,
     object: 'chat.completion',
@@ -96,12 +96,12 @@ function formatResponse(assistantContent: any, finishReason: string | null = nul
     //   completion_tokens: 0,
     //   total_tokens: 0
     // }
-  }
+  };
 }
 
 function formatChunkResponse(assistantContent: any, finishReason: string | null = null) {
-  const id = randomId()
-  const fingerPrint = systemFingerprint()
+  const id = randomId();
+  const fingerPrint = systemFingerprint();
   return {
     id: `chatcmpl-${id}`,
     object: 'chat.completion.chunk',
@@ -119,100 +119,100 @@ function formatChunkResponse(assistantContent: any, finishReason: string | null 
         finish_reason: finishReason
       }
     ]
-  }
+  };
 }
 
 app.get('/v1/chat/completions', async (req, res) => {
-  const body = req.body
+  const body = req.body;
   // check if body is valid
   if (!body || !body.messages || !Array.isArray(body.messages) || body.messages.length === 0) {
-    res.status(400).send('Invalid request body')
-    return
+    res.status(400).send('Invalid request body');
+    return;
   }
 
-  const messages = body.messages
-  const lastMessageContent = messages[messages.length - 1]?.content
-  const lastMessageRole = messages[messages.length - 1]?.role
+  const messages = body.messages;
+  const lastMessageContent = messages[messages.length - 1]?.content;
+  const lastMessageRole = messages[messages.length - 1]?.role;
   if (!lastMessageContent || !lastMessageRole || lastMessageRole !== 'user') {
-    res.status(400).send('Invalid request body')
-    return
+    res.status(400).send('Invalid request body');
+    return;
   }
-  const history = messages.slice(0, messages.length - 1)
-  const stream = body.stream || false
+  const history = messages.slice(0, messages.length - 1);
+  const stream = body.stream || false;
 
-  const temperature = body.temperature || 0.8
-  const maxTokens = body.max_tokens || 2500
+  const temperature = body.temperature || 0.8;
+  const maxTokens = body.max_tokens || 2500;
 
   const payload = {
     prompt: lastMessageContent,
     temperature,
     maxTokens,
     history: history
-  }
+  };
 
   // console.log('GET /v1/chat/completions')
   // console.log(payload)
 
-  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
   if (stream) {
-    res.setHeader('Content-Type', 'text/event-stream; charset=utf-8')
-    res.setHeader('Transfer-Encoding', 'chunked')
-    res.setHeader('Connection', 'keep-alive')
-    res.setHeader('Cache-Control', 'no-cache')
+    res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+    res.setHeader('Transfer-Encoding', 'chunked');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Cache-Control', 'no-cache');
   }
 
   function onNewChunk(text: string) {
-    if (!stream) return
-    res.write(`data: ${JSON.stringify(formatChunkResponse(text))}\n\n`)
+    if (!stream) return;
+    res.write(`data: ${JSON.stringify(formatChunkResponse(text))}\n\n`);
   }
 
-  let assistantResponse: string | undefined
+  let assistantResponse: string | undefined;
 
   try {
-    assistantResponse = await inferenceService.runInference(payload, onNewChunk)
+    assistantResponse = await inferenceService.runInference(payload, onNewChunk);
   } catch (error: any) {
-    res.status(500).send(error?.message || 'Internal server error')
+    res.status(500).send(error?.message || 'Internal server error');
   }
 
   if (!stream) {
     if (!assistantResponse) {
-      res.status(500).send('Assistant response is empty')
-      return
+      res.status(500).send('Assistant response is empty');
+      return;
     }
-    res.send(formatResponse(assistantResponse))
-    return
+    res.send(formatResponse(assistantResponse));
+    return;
   }
-  res.write(`data: ${JSON.stringify(formatChunkResponse('', 'stop'))}\n\n`)
-  res.write('data: [DONE]\n\n')
-  res.end()
-})
+  res.write(`data: ${JSON.stringify(formatChunkResponse('', 'stop'))}\n\n`);
+  res.write('data: [DONE]\n\n');
+  res.end();
+});
 
-let server: Server
-let serverIsRunning: boolean = false
+let server: Server;
+let serverIsRunning: boolean = false;
 export function startServer(payload: { port: number }) {
   if (serverIsRunning) {
-    return
+    return;
   }
 
   server = app.listen(payload.port, () => {
-    console.log(`Server listening on port ${payload.port}`)
-    serverIsRunning = true
-  })
+    console.log(`Server listening on port ${payload.port}`);
+    serverIsRunning = true;
+  });
 
   server.on('close', function () {
-    console.log('Server closed.')
-    serverIsRunning = false
-  })
+    console.log('Server closed.');
+    serverIsRunning = false;
+  });
 }
 
 export function stopServer() {
   if (!serverIsRunning) {
-    return
+    return;
   }
-  server?.close()
+  server?.close();
 }
 
 export function getServerStatus() {
-  return serverIsRunning
+  return serverIsRunning;
 }

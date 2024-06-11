@@ -1,50 +1,49 @@
-import type { Editor } from '@tiptap/vue-3'
-import { getSelectionText } from './../utils/editor-utils'
-// import useTurndown from '~/composables/useTurndown'
-import useEditorCompletion from './useEditorCompletion'
+import type { Editor } from '@tiptap/vue-3';
+import { getSelectionText } from './../utils/editor-utils';
+import useEditorCompletion from './useEditorCompletion';
+import useToast from '@renderer/composables/useToast';
 
 export default function useRunCompletion() {
-  // const { toMarkdown } = useTurndown()
-  const { getEditorCompletion, isLoading } = useEditorCompletion()
+  const { getEditorCompletion, isLoading } = useEditorCompletion();
+  const toast = useToast();
 
   function runCompletion(
     editor: Editor,
     options: { lang: string; action: string; prompt: string | undefined }
   ) {
-    if (!editor) return
-    const { selectedText, pos } = getSelectionText(editor)
+    if (!editor) return;
+    const { selectedText, pos } = getSelectionText(editor);
 
-    // const markdown = toMarkdown(editor.getHTML())
+    if (!selectedText) {
+      toast.info({ message: 'Please select some text.' });
+      return;
+    }
 
     const payload = {
       lang: options.lang,
       action: options.action,
       selectedText,
-      // fullText: markdown,
-      prompt: options.prompt || ''
-    }
+      prompt: options.prompt || '',
+      fullText: undefined // currently not used
+    };
 
     getEditorCompletion(payload)
       .then((res: any) => {
-        console.log('[EditorCompletion Response] ', res)
-        const tr = editor.state.tr.insertText(
-          res?.choices[0].message.content || '',
-          pos.from,
-          pos.to
-        )
-        editor.view.dispatch(tr)
-        editor.commands.focus()
+        const tr = editor.state.tr.insertText(res || '', pos.from, pos.to);
+        editor.view.dispatch(tr);
+        editor.commands.focus();
       })
       .catch((err: any) => {
-        console.log('[EditorCompletion Error] ', err)
+        console.error('[EditorCompletion Error] ', err);
+        toast.error({ message: 'Ups! Something went wrong. Please try again.' });
       })
       .finally(() => {
         //
-      })
+      });
   }
 
   return {
     isLoading,
     runCompletion
-  }
+  };
 }

@@ -1,7 +1,7 @@
-import { toast } from 'vue-sonner'
+import { toast } from 'vue-sonner';
 
 interface IToast {
-  message: string
+  message: string;
 }
 
 export default function useToast() {
@@ -9,18 +9,26 @@ export default function useToast() {
     toast.success('Success', {
       description: payload.message,
       duration: 3000
-    })
+    });
   }
 
   function error(payload: IToast) {
     toast.error('Error', {
       description: payload.message,
       duration: 10000
-    })
+    });
+  }
+
+  function info(payload: IToast) {
+    toast.info('Info', {
+      description: payload.message,
+      duration: 3000
+    });
   }
 
   return {
     success,
-    error
-  }
+    error,
+    info
+  };
 }

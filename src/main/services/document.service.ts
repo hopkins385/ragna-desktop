@@ -1,5 +1,5 @@
-import { Document } from '../database/entities'
-import { Repository } from 'typeorm'
+import { Document } from '../database/entities';
+import { Repository } from 'typeorm';
 
 export class DocumentService {
   constructor(private documentRepository: Repository<Document>) {}
@@ -24,50 +24,50 @@ export class DocumentService {
           chunks: true
         }
       }
-    })
+    });
   }
 
   async getDocumentById(id: string): Promise<Document | null> {
-    return this.documentRepository.findOne({ where: { id } })
+    return this.documentRepository.findOne({ where: { id } });
   }
 
   async createNewDocument(payload: {
-    title: string
-    content?: string
-    fileName?: string
-    filePath?: string
+    title: string;
+    content?: string;
+    fileName?: string;
+    filePath?: string;
   }): Promise<Document> {
-    const document = new Document()
-    document.title = payload.title
-    document.content = payload.content
-    document.fileName = payload.fileName
-    document.filePath = payload.filePath
-    return this.documentRepository.save(document)
+    const document = new Document();
+    document.title = payload.title;
+    document.content = payload.content;
+    document.fileName = payload.fileName;
+    document.filePath = payload.filePath;
+    return this.documentRepository.save(document);
   }
 
   async saveDocument(document: Document): Promise<Document> {
-    return this.documentRepository.save(document)
+    return this.documentRepository.save(document);
   }
 
   async deleteDocument(id: string): Promise<void> {
-    await this.documentRepository.delete(id)
+    await this.documentRepository.delete(id);
   }
 
   async updateDocumentTitle(id: string, payload: { title: string }): Promise<Document> {
-    const document = await this.documentRepository.findOne({ where: { id } })
+    const document = await this.documentRepository.findOne({ where: { id } });
     if (!document) {
-      throw new Error('Document not found')
+      throw new Error('Document not found');
     }
-    document.title = payload.title
-    return this.documentRepository.save(document)
+    document.title = payload.title;
+    return this.documentRepository.save(document);
   }
 
   async updateDocumentContent(id: string, payload: { content: string }): Promise<Document> {
-    const document = await this.documentRepository.findOne({ where: { id } })
+    const document = await this.documentRepository.findOne({ where: { id } });
     if (!document) {
-      throw new Error('Document not found')
+      throw new Error('Document not found');
     }
-    document.content = payload.content
-    return this.documentRepository.save(document)
+    document.content = payload.content;
+    return this.documentRepository.save(document);
   }
 }

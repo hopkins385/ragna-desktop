@@ -4,5 +4,5 @@ export enum FileType {
   DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   TXT = 'text/plain',
   MARKDOWN = 'text/markdown',
-  HTML = 'text/html',
+  HTML = 'text/html'
 }

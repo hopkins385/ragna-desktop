@@ -34,6 +34,38 @@ jobs:
         env:
           APP_ARCH: 'x64'
 
+      - name: Upload to R2
+        uses: ryand56/r2-upload-action@latest
+        with:
+          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          r2-bucket: ${{ secrets.R2_BUCKET }}
+          source-dir: dist
+          destination-dir: ./
+
+      # - name: Create release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: Release ${{ github.ref }}
+      #     body: |
+      #       Changes in this Release
+      #       - Add new feature
+      #       - Fix some bugs
+      #     draft: false
+      #     prerelease: false
+      #     artifacts: |
+      #       [
+      #         {
+      #           "name": "built-project",
+      #           "path": "dist/",
+      #           "label": "Built Project"
+      #         }
+      #       ]
+
       # - name: build-mac
       #   if: matrix.os == 'macos-latest'
       #   run: npm run build:mac

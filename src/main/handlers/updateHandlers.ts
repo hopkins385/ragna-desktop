@@ -1,9 +1,9 @@
-import { ipcMain, autoUpdater } from 'electron'
+import { ipcMain, autoUpdater } from 'electron';
 
 function installUpdate() {
-  autoUpdater.quitAndInstall()
+  autoUpdater.quitAndInstall();
 }
 
 export function handleUpdateIPCs() {
-  ipcMain.handle('install-update', installUpdate)
+  ipcMain.handle('install-update', installUpdate);
 }
