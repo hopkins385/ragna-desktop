@@ -59,15 +59,21 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: copy dist\*.exe upload
 
-      - name: Upload to R2
-        uses: ryand56/r2-upload-action@latest
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
         with:
-          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
-          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          r2-bucket: ${{ secrets.R2_BUCKET }}
-          source-dir: upload/
-          destination-dir: ./
+          name: artifacts
+          path: upload
+
+      # - name: Upload to R2
+      #   uses: ryand56/r2-upload-action@latest
+      #   with:
+      #     r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+      #     r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+      #     r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      #     r2-bucket: ${{ secrets.R2_BUCKET }}
+      #     source-dir: upload/
+      #     destination-dir: ./
 
       # - name: Create release
       #   uses: actions/create-release@v1
