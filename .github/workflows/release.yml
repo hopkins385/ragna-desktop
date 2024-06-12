@@ -41,6 +41,9 @@ jobs:
         env:
           APP_ARCH: 'arm64'
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         #  APPLE_IDENTITY: ${{ secrets.APPLE_IDENTITY }}
 
       - name: Make dir for upload
@@ -50,14 +53,22 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: cp dist/*.dmg upload
 
+      - name: Archive production artifacts
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-mac
+          path: upload
+
       - name: Copy exe to upload
         if: matrix.os == 'windows-latest'
         run: copy dist\*.exe upload
 
       - name: Archive production artifacts
+        if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: artifacts
+          name: artifacts-win
           path: upload
 
       # - name: Upload to R2
