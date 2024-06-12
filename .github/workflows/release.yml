@@ -40,6 +40,7 @@ jobs:
         run: npm run build:mac
         env:
           APP_ARCH: 'arm64'
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         #  APPLE_IDENTITY: ${{ secrets.APPLE_IDENTITY }}
 
       - name: Make dir for upload
