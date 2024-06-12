@@ -1,6 +1,6 @@
 {
   "name": "ragna-desktop-app",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "RAGNA Desktop",
   "author": "Sven Stadhouders",
   "homepage": "https://ragna.app",
@@ -27,6 +27,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
+    "@sentry/electron": "^5.0.0",
     "@swc/core": "^1.5.28",
     "@tailwindcss/typography": "^0.5.13",
     "@tiptap/extension-bubble-menu": "^2.4.0",
