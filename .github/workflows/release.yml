@@ -1,9 +1,8 @@
 name: build
 
 on:
-  push
-  # push:
-  # tags: ['v[0-9]+.[0-9]+.[0-9]+']
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
 
 jobs:
   build:
@@ -28,15 +27,20 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-      - name: Build llama-cpp bins
-        run: npx --no node-llama-cpp download
 
-      - name: build-win
+      - name: Build Win
         if: matrix.os == 'windows-latest'
         run: npm run build:win
         env:
           APP_ARCH: 'x64'
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Build Mac
+      #   if: matrix.os == 'macos-latest'
+      #   run: npm run build:mac
+      #   env:
+      #     APP_ARCH: 'arm64'
+      #     APPLE_IDENTITY: ${{ secrets.APPLE_IDENTITY }}
 
       #    - name: Archive production artifacts
       #      uses: actions/upload-artifact@v4
@@ -44,14 +48,14 @@ jobs:
       #        name: dist-zip
       #        path: dist/*.zip | dist/*.msi
 
-      - name: make dir for upload
+      - name: Make dir for upload
         run: mkdir upload
 
       - name: Copy dmg to upload
         if: matrix.os == 'macos-latest'
         run: cp dist/*.dmg upload
 
-      - name: Copy only exe to upload
+      - name: Copy exe to upload
         if: matrix.os == 'windows-latest'
         run: copy dist\*.exe upload
 
@@ -86,10 +90,3 @@ jobs:
       #           "label": "Built Project"
       #         }
       #       ]
-
-      # - name: build-mac
-      #   if: matrix.os == 'macos-latest'
-      #   run: npm run build:mac
-      #   env:
-      #     APP_ARCH: 'arm64'
-      #     APPLE_IDENTITY: ${{ secrets.APPLE_IDENTITY }}

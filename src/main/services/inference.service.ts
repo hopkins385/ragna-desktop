@@ -247,7 +247,6 @@ export class InferenceService {
     }
 
     this.inferenceAbortController = new AbortController();
-    const model = this.model;
 
     if (payload.history && payload.history.length > 0) {
       await this.setSessionHistory(payload.history);
@@ -259,8 +258,12 @@ export class InferenceService {
         stopOnAbortSignal: true,
         temperature: payload.temperature,
         maxTokens: payload.maxTokens,
-        onToken(chunk) {
-          const text = model.detokenize(chunk);
+        onToken: (chunk) => {
+          if (!this.model) {
+            this.inferenceAbortController.abort();
+            return;
+          }
+          const text = this.model.detokenize(chunk);
           newChunkCallback(text);
         }
       });
