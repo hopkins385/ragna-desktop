@@ -114,7 +114,7 @@
 </script>
 
 <template>
-  <LayoutDefault class="overflow-y-scroll bg-white">
+  <LayoutDefault class="overflow-y-scroll no-scrollbar bg-white">
     <div
       class="mt-5 flex h-44 shrink-0 items-center justify-center rounded-xl border"
       :style="backgroundImage2"

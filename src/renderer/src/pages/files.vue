@@ -93,7 +93,7 @@
 </script>
 
 <template>
-  <LayoutDefault class="overflow-x-auto">
+  <LayoutDefault class="no-scrollbar overflow-x-auto">
     <HeadingTitle title="Files" />
 
     <div class="">

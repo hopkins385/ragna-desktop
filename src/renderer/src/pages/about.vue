@@ -48,16 +48,6 @@
           </a>
         </div>
         <div>
-          <p class="font-semibold">Privacy</p>
-          <div>
-            <p class="pt-1 text-sm">This app does not collect data.</p>
-            <ul class="hidden list-disc pl-5 pt-1 text-sm">
-              <li>Anonymous usage statistics</li>
-              <li>Crash reports</li>
-            </ul>
-          </div>
-        </div>
-        <div>
           <p class="font-semibold">License</p>
           <p class="pt-1 text-sm">
             Non Commercial License.<br />Only for private or educational use.

@@ -30,7 +30,7 @@
       <!-- Warning: Do not remove id="main", its being queried! -->
       <div
         id="main"
-        class="size-full overflow-x-hidden overflow-y-scroll border-l border-t bg-white"
+        class="no-scrollbar size-full overflow-x-hidden overflow-y-scroll border-l border-t bg-white"
       >
         <router-view />
       </div>

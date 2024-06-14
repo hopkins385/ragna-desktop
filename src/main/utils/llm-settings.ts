@@ -27,7 +27,7 @@ export function getLlmGpuLayers(): number {
 
 export function getLlmUseMlock(): boolean {
   const store = getAppStorage();
-  const defaultUseMlock = platform.isMacOS ? false : true;
+  const defaultUseMlock = true;
   const useMlock = store.get('use_mlock', defaultUseMlock) as boolean;
   return useMlock;
 }

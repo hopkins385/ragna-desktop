@@ -183,12 +183,14 @@ export class InferenceService {
       return false;
     }
 
+    /*
+    // This is causing crashed on Windows. Disabled for now.
     try {
       await this.warumUpModel(this.abortLoadModelController.signal);
     } catch (err: any) {
       logger.error('Failed to warm up model %s', err);
       return false;
-    }
+    }*/
 
     try {
       const context = await this.createContext(this.abortLoadModelController.signal);

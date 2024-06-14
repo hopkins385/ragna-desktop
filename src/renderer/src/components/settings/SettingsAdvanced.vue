@@ -19,7 +19,8 @@
   const handleGpuAccelerationChange = async (checked: boolean) => {
     try {
       gpuAcceleration.value = checked;
-      await window.electron.ipcRenderer.invoke('set-llm-gpu-layers', checked);
+      const value = checked ? -1 : 0;
+      await window.electron.ipcRenderer.invoke('set-llm-gpu-layers', value);
       const message = checked ? 'enabled' : 'disabled';
       if (model.isModelLoaded) {
         toast.info('Please restart the AI model for the changes to take effect.', {
@@ -36,8 +37,9 @@
 
   async function getGpuAccelerationState() {
     try {
-      const gpuAccelerationState = await window.electron.ipcRenderer.invoke('get-llm-gpu-layers');
-      return gpuAccelerationState;
+      const llmGpuLayers = await window.electron.ipcRenderer.invoke('get-llm-gpu-layers');
+      if (llmGpuLayers === -1) return true;
+      return false;
     } catch (error) {
       console.error('Error getting GPU acceleration state', error);
       return false;
