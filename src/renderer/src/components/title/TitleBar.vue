@@ -13,6 +13,18 @@
   const settings = useSettingsStore();
 
   const isWin = navigator.userAgent.includes('Win');
+
+  function onWinMinimze() {
+    window.electron.ipcRenderer.send('win:minimize');
+  }
+
+  function onWinMaximize() {
+    window.electron.ipcRenderer.send('win:toggle-fullscreen');
+  }
+
+  function onWinClose() {
+    window.electron.ipcRenderer.send('win:close');
+  }
 </script>
 
 <template>
@@ -65,21 +77,21 @@
       <button
         aria-label="Minimize"
         class="cursor-pointer py-2 hover:text-neutral-200"
-        @click="onAppMinimze()"
+        @click="onWinMinimze()"
       >
         <MinusIcon class="stroke-1.5 mt-0 size-5 shrink-0" />
       </button>
       <button
         aria-label="Full Screen"
         class="cursor-pointer py-2 hover:text-neutral-200"
-        @click="onAppFullScreen()"
+        @click="onWinMaximize()"
       >
         <SquareIcon class="stroke-1.5 size-4 shrink-0" />
       </button>
       <button
         aria-label="Close"
         class="cursor-pointer py-2 hover:text-neutral-200"
-        @click="onAppExit()"
+        @click="onWinClose()"
       >
         <XIcon class="stroke-1.5 size-5 shrink-0" />
       </button>

@@ -50,5 +50,28 @@ export function createWindow() {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
   }
 
+  // listen for win: messages
+  mainWindow.webContents.on('ipc-message', (event, channel) => {
+    if (channel === 'win:minimize') {
+      mainWindow?.minimize();
+    }
+
+    if (channel === 'win:close') {
+      mainWindow?.close();
+    }
+
+    if (channel === 'win:toggle-fullscreen') {
+      mainWindow?.setFullScreen(!mainWindow.isFullScreen());
+    }
+
+    if (channel === 'win:maximize') {
+      mainWindow?.maximize();
+    }
+
+    if (channel === 'win:close') {
+      mainWindow?.close();
+    }
+  });
+
   return mainWindow;
 }
