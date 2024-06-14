@@ -24,13 +24,13 @@
     onSubmitUserInput,
     onRunExample,
     onStopStreaming,
-    onStop,
     initChat,
     newChatSession,
     registerStreamResponseListener,
     registerIsStreamingListener,
     removeIsStreamingListener,
     removeStreamResponseListener,
+    onAbortLoadingModel,
     assistantIsThinking,
     isStreaming,
     streamResponse,
@@ -108,7 +108,7 @@
   });
 
   onUnmounted(async () => {
-    await onStop();
+    await onStopStreaming();
     removeStreamResponseListener();
     removeIsStreamingListener();
   });
@@ -141,7 +141,7 @@
           v-else-if="model.isModelLoadingInProgress"
           variant="outline"
           class="shrink-0"
-          @click="onStop"
+          @click="() => onAbortLoadingModel()"
         >
           <Icon name="loading" class="stroke-1.5 my-2 size-4 animate-spin" />
         </Button>

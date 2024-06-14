@@ -1,5 +1,5 @@
 import { ipcMain, dialog } from 'electron';
-import { getModelsFolderPath } from '../handlers/modelHandlers';
+import { getModelsFolderPath } from './modelPathHandlers';
 import recursive from 'recursive-readdir';
 
 /**

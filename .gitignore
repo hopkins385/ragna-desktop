@@ -2,6 +2,7 @@ node_modules
 dist
 out
 data
+!resources/**/*
 .DS_Store
 *.log*
 .env

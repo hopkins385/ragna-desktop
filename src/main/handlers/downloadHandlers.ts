@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { getModelsFolderPath, getModelList } from '../handlers/modelHandlers';
+import { getModelsFolderPath, getModelList } from './modelPathHandlers';
 import { getMainWindow } from '../utils/window';
 
 import EasyDl from 'easydl';

@@ -3,6 +3,7 @@ import { app, ipcMain } from 'electron';
 import { getAppStorage } from '../utils/store';
 import { getResourcePath } from '../utils/path';
 import { logger } from '../utils/logger';
+import { join } from 'path';
 
 /**
  * Set models default path
@@ -17,8 +18,8 @@ function setModelsFolderPath(_event: Electron.IpcMainInvokeEvent | null, path: s
  */
 function initModelsFolder() {
   const homePath = app.getPath('home');
-  const folder = '/LLM-Models';
-  const folderPath = homePath + folder;
+  const defaultLlmFolder = 'LLM-Models';
+  const folderPath = join(homePath, defaultLlmFolder);
   if (!existsSync(folderPath)) {
     mkdir(folderPath, { recursive: true, mode: 0o755 }, (err) => {
       if (err) {
@@ -49,7 +50,7 @@ export function getModelsFolderPath() {
  * is exported and used by others
  */
 export async function getModelList() {
-  const jsonFile = getResourcePath() + '/data/llmList.json';
+  const jsonFile = join(getResourcePath(), 'data', 'llmList.json');
   // check if file exists
   if (!existsSync(jsonFile)) {
     logger.error('File does not exist at: %s', jsonFile);
@@ -59,7 +60,7 @@ export async function getModelList() {
   return readFileSync(jsonFile, 'utf8');
 }
 
-export function handleModelIPCs() {
+export function handleModelPathIPCs() {
   ipcMain.handle('set-models-folder-path', setModelsFolderPath);
   ipcMain.handle('get-models-folder-path', getModelsFolderPath);
   ipcMain.handle('get-model-list', getModelList);

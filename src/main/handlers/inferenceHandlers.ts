@@ -2,10 +2,10 @@ import type { ChatMessage } from '../database/entities';
 import { ChatService } from './../services/chat.service';
 import { ipcMain } from 'electron';
 import { getMainWindow } from '../utils/window';
-import { getAppStorage } from '../utils/store';
 import { globalInferenceService } from '../services/inference.service';
 import { ChatRepository } from '../repositories/chat.repository';
 import { logger } from '../utils/logger';
+import { getGpuLayers, getLlmContextSize } from '../utils/llm-settings';
 
 const inferenceService = globalInferenceService;
 
@@ -35,12 +35,20 @@ async function runInference(payload: InferencePayload) {
 export function handleInferenceIPCs() {
   // Load LLM
   ipcMain.handle('load-llm', async (_, filePath) => {
-    const store = getAppStorage();
-    const gpuLayers = store.get('gpu_layers', -1) as number;
+    const gpuLayers = getGpuLayers();
+    const contextSize = getLlmContextSize();
     const result = await inferenceService.loadModel({
       modelPath: filePath,
+      contextSize,
       gpuLayers
     });
+    console.log('Load-LLM result: ', result);
+    return { success: result };
+  });
+
+  // Abort LLM Loading
+  ipcMain.handle('abort-load-llm', async () => {
+    const result = await inferenceService.abortLoadModel();
     return { success: result };
   });
 

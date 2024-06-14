@@ -1,16 +1,16 @@
-import { app, BrowserWindow, shell } from 'electron'
-import { join } from 'path'
-import { is } from '@electron-toolkit/utils'
-import { fileURLToPath } from 'url'
-import icon from '../../../resources/icon.png?asset'
+import { BrowserWindow, shell } from 'electron';
+import { join } from 'path';
+import { is } from '@electron-toolkit/utils';
+import { fileURLToPath } from 'url';
+import icon from '../../../resources/icon.png?asset';
 
-let mainWindow: BrowserWindow | null = null
+let mainWindow: BrowserWindow | null = null;
 
 export function getMainWindow(): BrowserWindow {
   if (!mainWindow) {
-    return createWindow()
+    return createWindow();
   }
-  return mainWindow
+  return mainWindow;
 }
 
 export function createWindow() {
@@ -36,19 +36,19 @@ export function createWindow() {
       nodeIntegration: false,
       nodeIntegrationInWorker: true*/
     }
-  })
+  });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
+    shell.openExternal(details.url);
+    return { action: 'deny' };
+  });
 
   // and load the index.html of the app.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
   }
 
-  return mainWindow
+  return mainWindow;
 }

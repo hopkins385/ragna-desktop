@@ -72,7 +72,7 @@ export default function useChat() {
         };
       });
       chat.setMessages(messages);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast.error({ message: error?.message });
     }
@@ -80,7 +80,7 @@ export default function useChat() {
 
   async function onEjectModel() {
     if (!modelStore.isModelLoaded) return;
-    await onStop();
+    await onStopStreaming();
     chat.clearMessages();
     modelStore.setModelIsUnloading();
     try {
@@ -105,12 +105,12 @@ export default function useChat() {
     runFakeProgressBar();
     try {
       const { success } = await window.electron.ipcRenderer.invoke('load-llm', path);
-      const chatData = await window.electron.ipcRenderer.invoke('create-llm-session', {
-        systemPrompt: chatSettings.getSystemPrompt
-      });
       if (!success) {
         throw new Error('Failed to load model');
       }
+      const chatData = await window.electron.ipcRenderer.invoke('create-llm-session', {
+        systemPrompt: chatSettings.getSystemPrompt
+      });
       chat.setChatId(chatData?.id || '');
       chat.clearMessages();
       modelStore.setModelIsLoaded();
@@ -119,6 +119,16 @@ export default function useChat() {
       modelStore.setModelIsUnloaded();
       toast.error({ message: error?.message });
       console.error(error);
+    }
+  }
+
+  async function onAbortLoadingModel() {
+    try {
+      await window.electron.ipcRenderer.invoke('abort-load-llm');
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      modelStore.setModelIsUnloaded();
     }
   }
 
@@ -154,7 +164,7 @@ export default function useChat() {
       setIsStreaming(false); // not really needed, because covered by isStreamingListener, but just in case
       clearStreamResponse();
       chat.addMessage(response, 'assistant');
-    } catch (error) {
+    } catch (error: any) {
       setRequestIsPending(false);
       console.error(error);
       toast.error({ message: error?.message });
@@ -165,15 +175,6 @@ export default function useChat() {
     userInput.value = prompt;
     await onSubmitUserInput();
   }
-
-  /*async function onResetChat() {
-    await onStop()
-    chat.clearMessages()
-    // await newChatSession()
-    await window.electron.ipcRenderer.invoke('clear-llm-history', chat.getChatId)
-  }*/
-
-  async function onNewChat() {}
 
   async function newChatSession() {
     setRequestIsPending(true);
@@ -223,13 +224,9 @@ export default function useChat() {
   }
 
   async function onStopStreaming() {
-    await window.electron.ipcRenderer.invoke('stop-llm-streaming');
-  }
-
-  async function onStop() {
     if (!modelStore.isModelLoaded) return;
     if (!isStreaming.value) return;
-    await onStopStreaming();
+    await window.electron.ipcRenderer.invoke('stop-llm-streaming');
   }
 
   // Watch if system prompt changes
@@ -256,8 +253,8 @@ export default function useChat() {
     onEjectModel,
     onSubmitUserInput,
     onStopStreaming,
-    onStop,
     newChatSession,
+    onAbortLoadingModel,
     registerIsStreamingListener,
     registerStreamResponseListener,
     removeIsStreamingListener,

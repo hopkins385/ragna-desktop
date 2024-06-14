@@ -4,7 +4,6 @@ import { createWindow } from './utils/window';
 import { handleVectorIPCs } from './handlers/vectorHandlers';
 import { handleAppIPCs } from './handlers/appHandlers';
 import { handlePathIPCs } from './handlers/pathHandlers';
-import { handleModelIPCs } from './handlers/modelHandlers';
 import { handleDownloadIPCs } from './handlers/downloadHandlers';
 import { handleGPUIPCs } from './handlers/gpuHandlers';
 import { handleLogsIPCs } from './handlers/logsHandlers';
@@ -19,6 +18,8 @@ import { handleChatIPCs } from './handlers/chatHandlers';
 import { handleDocumentIPCs } from './handlers/documentHandlers';
 import { handleServerIPCs } from './handlers/serverHandlers';
 import { initSentry } from './handlers/sentryHandlers';
+import { handleModelPathIPCs } from './handlers/modelPathHandlers';
+import { handleModelSettingsIPCs } from './handlers/modelSettingsHandlers';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 
@@ -86,7 +87,8 @@ function addDevToolsListener() {
 
 function registerHandlers() {
   handlePathIPCs();
-  handleModelIPCs();
+  handleModelPathIPCs();
+  handleModelSettingsIPCs();
   handleDownloadIPCs();
   // handleMetricsIPCs()
   handleGPUIPCs();

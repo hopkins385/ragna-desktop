@@ -108,7 +108,7 @@
         <pre>{{ content }}</pre>
       </div>
       <div class="max-w-sm px-2 py-5">
-        <Input type="text" v-model="input" />
+        <Input v-model="input" type="text" />
         <Button @click="() => onSubmit()">Submit</Button>
       </div>
     </div>
