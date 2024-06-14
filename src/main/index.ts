@@ -5,7 +5,6 @@ import { handleVectorIPCs } from './handlers/vectorHandlers';
 import { handleAppIPCs } from './handlers/appHandlers';
 import { handlePathIPCs } from './handlers/pathHandlers';
 import { handleDownloadIPCs } from './handlers/downloadHandlers';
-import { handleGPUIPCs } from './handlers/gpuHandlers';
 import { handleLogsIPCs } from './handlers/logsHandlers';
 import { handleUpdateIPCs } from './handlers/updateHandlers';
 import { handleFileIPCs } from './handlers/fileHandlers';
@@ -91,7 +90,6 @@ function registerHandlers() {
   handleModelSettingsIPCs();
   handleDownloadIPCs();
   // handleMetricsIPCs()
-  handleGPUIPCs();
   handleAppIPCs();
   handleLogsIPCs();
   handleUpdateIPCs();

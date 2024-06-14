@@ -9,22 +9,22 @@
   import { useModelStore } from '@/stores/model.store';
   import Input from '../ui/input/Input.vue';
 
-  const gpuChecked = ref(true);
+  const gpuAcceleration = ref(false);
   const hasGpu = ref(true);
   const contextSize = ref(2048);
+  const useMlock = ref(false);
   const model = useModelStore();
   // const { getGpuInfo } = useGpuHardware()
 
-  const handleChange = async (checked: boolean) => {
+  const handleGpuAccelerationChange = async (checked: boolean) => {
     try {
-      gpuChecked.value = checked;
-      await window.electron.ipcRenderer.invoke('set-gpu-acceleration-state', checked);
+      gpuAcceleration.value = checked;
+      await window.electron.ipcRenderer.invoke('set-llm-gpu-layers', checked);
       const message = checked ? 'enabled' : 'disabled';
       if (model.isModelLoaded) {
         toast.info('Please restart the AI model for the changes to take effect.', {
           duration: 6000
         });
-        // await server.restartModel()
       } else {
         toast.success(`GPU acceleration ${message}`);
       }
@@ -34,30 +34,52 @@
     }
   };
 
-  const initAccelerationState = async () => {
+  async function getGpuAccelerationState() {
     try {
-      const gpuAccelerationState = await window.electron.ipcRenderer.invoke(
-        'get-gpu-acceleration-state'
-      );
-      gpuChecked.value = gpuAccelerationState;
+      const gpuAccelerationState = await window.electron.ipcRenderer.invoke('get-llm-gpu-layers');
+      return gpuAccelerationState;
     } catch (error) {
-      // silent discard
+      console.error('Error getting GPU acceleration state', error);
+      return false;
     }
-  };
-
-  /*const initGpuInfo = async () => {
-  try {
-    const gpuInfo = await getGpuInfo()
-    if (gpuInfo && gpuInfo?.gpu) {
-      hasGpu.value = gpuInfo.gpu.length > 0
-    } else {
-      hasGpu.value = false
-    }
-  } catch (error) {
-    console.error('Error getting GPU info', error)
-    hasGpu.value = false
   }
-}*/
+
+  async function handleUseMlockChange(checked: boolean) {
+    try {
+      useMlock.value = checked;
+      await setUseMlock(checked);
+      const message = checked ? 'enabled' : 'disabled';
+      if (model.isModelLoaded) {
+        toast.info('Please restart the AI model for the changes to take effect.', {
+          duration: 6000
+        });
+      } else {
+        toast.success(`Keep LLM in memory ${message}`);
+      }
+    } catch (error) {
+      console.error('Error setting use mlock', error);
+      toast.error('Error setting use mlock');
+    }
+  }
+
+  async function getUseMlock() {
+    try {
+      const useMlock = await window.electron.ipcRenderer.invoke('get-llm-use-mlock');
+      return useMlock;
+    } catch (error) {
+      console.error('Error getting use mlock', error);
+      return false;
+    }
+  }
+
+  async function setUseMlock(value: boolean) {
+    try {
+      await window.electron.ipcRenderer.invoke('set-llm-use-mlock', value);
+    } catch (error) {
+      console.error('Error setting use mlock', error);
+      toast.error('Error setting use mlock');
+    }
+  }
 
   async function getContextSize() {
     try {
@@ -88,8 +110,9 @@
   );
 
   onMounted(async () => {
-    await initAccelerationState();
+    gpuAcceleration.value = await getGpuAccelerationState();
     contextSize.value = await getContextSize();
+    useMlock.value = await getUseMlock();
     // await initGpuInfo()
   });
 </script>
@@ -113,27 +136,45 @@
       </div>
       <div class="space-y-0.5">
         <FormLabel class="text-base"> GPU Acceleration </FormLabel>
-        <FormDescription>
-          Turning on GPU acceleration allows you to generate more tokens per second.
+        <FormDescription class="pr-10">
+          Turning on GPU acceleration allows you to generate more tokens per second. For Windows, we
+          recommend to only turn this on if you have a dedicated GPU with at least 8GB of VRAM. For
+          Mac M1 or newer, this feature is enabled by default. Turn this off if you are experiencing
+          issues.
         </FormDescription>
       </div>
       <FormControl>
-        <Switch :checked="gpuChecked" @update:checked="handleChange" />
+        <Switch :checked="gpuAcceleration" @update:checked="handleGpuAccelerationChange" />
+      </FormControl>
+    </FormItem>
+  </FormField>
+  <FormField name="useMlock">
+    <FormItem class="relative flex flex-row items-center justify-between rounded-lg border p-4">
+      <div class="space-y-0.5">
+        <FormLabel class="text-base"> Keep LLM in Memory </FormLabel>
+        <FormDescription class="pr-10">
+          Keeps the model in memory even if not used. This can speed up subsequent generations and
+          responses by the AI. We recommend to turn this off if you have a low amount of RAM or if
+          you are only using the AI occasionally.
+        </FormDescription>
+      </div>
+      <FormControl>
+        <Switch :checked="useMlock" @update:checked="handleUseMlockChange" />
       </FormControl>
     </FormItem>
   </FormField>
   <FormField name="contextSize">
     <FormItem class="relative flex flex-row items-center justify-between rounded-lg border p-4">
       <div class="space-y-0.5">
-        <FormLabel class="text-base"> LLM Context Size</FormLabel>
-        <FormDescription>
+        <FormLabel class="text-base"> LLM Context Size </FormLabel>
+        <FormDescription class="pr-10">
           The higher the context size, the more tokens the model can process. But be careful, as
           increasing the context size can lead to a very high memory usage and potentially crash the
-          app or freeze your system.
+          app or freeze your system. If you are experiencing issues, try to reduce this value.
         </FormDescription>
       </div>
       <FormControl class="">
-        <Input v-model="contextSize" class="ml-10 w-20" />
+        <Input v-model="contextSize" class="w-20 text-right" />
       </FormControl>
     </FormItem>
   </FormField>

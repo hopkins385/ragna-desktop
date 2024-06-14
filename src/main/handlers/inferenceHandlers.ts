@@ -5,7 +5,7 @@ import { getMainWindow } from '../utils/window';
 import { globalInferenceService } from '../services/inference.service';
 import { ChatRepository } from '../repositories/chat.repository';
 import { logger } from '../utils/logger';
-import { getGpuLayers, getLlmContextSize } from '../utils/llm-settings';
+import { getLlmContextSize, getLlmGpuLayers } from '../utils/llm-settings';
 
 const inferenceService = globalInferenceService;
 
@@ -35,7 +35,7 @@ async function runInference(payload: InferencePayload) {
 export function handleInferenceIPCs() {
   // Load LLM
   ipcMain.handle('load-llm', async (_, filePath) => {
-    const gpuLayers = getGpuLayers();
+    const gpuLayers = getLlmGpuLayers();
     const contextSize = getLlmContextSize();
     const result = await inferenceService.loadModel({
       modelPath: filePath,
