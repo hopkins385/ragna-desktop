@@ -1,5 +1,6 @@
+import * as sentry from '@sentry/electron';
 import { app, BrowserWindow } from 'electron';
-import { electronApp, optimizer } from '@electron-toolkit/utils';
+import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { createWindow } from './utils/window';
 import { handleVectorIPCs } from './handlers/vectorHandlers';
 import { handleAppIPCs } from './handlers/appHandlers';
@@ -102,6 +103,13 @@ function registerHandlers() {
   handleServerIPCs();
 }
 
+function logException(error: any) {
+  if (!error) return;
+  logger.error('[Exception] %s', error);
+  if (is.dev) return;
+  sentry.captureException(error);
+}
+
 initSentry();
 
 app
@@ -115,4 +123,10 @@ app
   .then(() => {
     console.log('App is ready: arch is', process.arch);
   })
-  .catch((e) => logger.error(e));
+  .catch((e) => logException(e));
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (e) => {
+  logException(e);
+  // app.exit(1);
+});

@@ -16,7 +16,7 @@
   <LayoutDefault>
     <div class="h-10" />
     <div class="rounded-2xl border p-10">
-      <h1 class="text-xl font-semibold"><span class="tracking-wide">RAGNA</span> Desktop App</h1>
+      <h1 class="text-xl font-semibold"><span class="tracking-wide">RAGNA</span> Desktop</h1>
       <p class="pt-1 text-sm text-slate-500">
         Copyright &copy; 2024 Sven Stadhouders. All rights reserved.
       </p>

@@ -21,6 +21,7 @@
         <div class="pb-10 text-center">
           <h2 class="text-2xl font-semibold">Need Help? Our Services</h2>
           <p class="pt-2">We offer a wide range of services to help you with your AI projects.</p>
+          <p class="pt-2">We are located in Germany.</p>
         </div>
         <div class="grid gap-10 pt-5 lg:grid-cols-3">
           <div class="max-w-xs space-y-3">
