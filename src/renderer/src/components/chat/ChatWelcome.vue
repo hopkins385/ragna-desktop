@@ -1,24 +1,16 @@
 <script setup lang="ts">
   import IconRagna from '@/assets/svg/ragna-logo-min.svg';
   import {
-    BadgeCheckIcon,
     BookOpenCheckIcon,
-    CarIcon,
     ClipboardCheckIcon,
     ComponentIcon,
-    GitBranchPlusIcon,
     GitForkIcon,
-    GitGraphIcon,
-    Layers3Icon,
     LayersIcon,
-    MonitorPlayIcon,
     SquareArrowOutUpRightIcon,
-    SquareCheckBigIcon,
-    SquareMousePointerIcon,
-    UsersIcon
+    SquareMousePointerIcon
   } from 'lucide-vue-next';
 
-  const emailHref = 'mailto:hello@ragna-ai.com';
+  const emailHref = 'mailto:hello@ragna.app';
 </script>
 
 <template>
