@@ -1,6 +1,22 @@
 <script setup lang="ts">
   import IconRagna from '@/assets/svg/ragna-logo-min.svg';
-  import { ComponentIcon, SquareArrowOutUpRightIcon, UsersIcon } from 'lucide-vue-next';
+  import {
+    BadgeCheckIcon,
+    BookOpenCheckIcon,
+    CarIcon,
+    ClipboardCheckIcon,
+    ComponentIcon,
+    GitBranchPlusIcon,
+    GitForkIcon,
+    GitGraphIcon,
+    Layers3Icon,
+    LayersIcon,
+    MonitorPlayIcon,
+    SquareArrowOutUpRightIcon,
+    SquareCheckBigIcon,
+    SquareMousePointerIcon,
+    UsersIcon
+  } from 'lucide-vue-next';
 
   const emailHref = 'mailto:hello@ragna-ai.com';
 </script>
@@ -20,13 +36,15 @@
       <div class="mx-auto w-fit rounded-md border-0 p-5 text-sm">
         <div class="pb-10 text-center">
           <h2 class="text-2xl font-semibold">Need Help? Our Services</h2>
-          <p class="pt-2">We offer a wide range of services to help you with your AI projects.</p>
+          <p class="pt-2">
+            We offer a wide range of services to help you to leverage AI technology.
+          </p>
           <p class="pt-2">We are located in Germany.</p>
         </div>
         <div class="grid gap-10 pt-5 lg:grid-cols-3">
           <div class="max-w-xs space-y-3">
             <span class="">
-              <UsersIcon class="stroke-1.5 size-10" />
+              <GitForkIcon class="stroke-1.5 size-10" />
             </span>
             <p class="font-bold">Process Automation Consulting</p>
             <p class="opacity-75">
@@ -44,8 +62,8 @@
             </span>
             <p class="font-bold">Design-Thinking-Workshops</p>
             <p class="opacity-75">
-              Discover innovative problem-solving options in a Design Thinking Workshop and develop
-              AI powered prototypes to create new customer and employee experiences.
+              Together with your team we discover innovative problem-solving options and develop AI
+              powered prototypes to create new customer and employee experiences.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
               <a class="hover:underline" :href="emailHref">More Info</a>
@@ -54,12 +72,12 @@
           </div>
           <div class="max-w-xs space-y-3">
             <span class="">
-              <UsersIcon class="stroke-1.5 size-10" />
+              <BookOpenCheckIcon class="stroke-1.5 size-10" />
             </span>
             <p class="font-bold">Tailored Know-How Transfer</p>
             <p class="opacity-75">
-              Empower your team with the expertise and knowledge needed to leverage the new AI
-              technology. We ensure your staff is equipped with the skills and knowledge needed.
+              We empower your team with the expertise and knowledge needed to leverage the new AI
+              technology tailored to your business requirements.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
               <a class="hover:underline" :href="emailHref">More Info</a>
@@ -68,7 +86,7 @@
           </div>
           <div class="max-w-xs space-y-3">
             <span class="">
-              <UsersIcon class="stroke-1.5 size-10" />
+              <ClipboardCheckIcon class="stroke-1.5 size-10" />
             </span>
             <p class="font-bold">Proof of Concept (PoC)</p>
             <p class="opacity-75">
@@ -82,7 +100,7 @@
           </div>
           <div class="max-w-xs space-y-3">
             <span class="">
-              <UsersIcon class="stroke-1.5 size-10" />
+              <SquareMousePointerIcon class="stroke-1.5 size-10" />
             </span>
             <p class="font-bold">Turn-Key Software Solutions</p>
             <p class="opacity-75">
@@ -96,7 +114,7 @@
           </div>
           <div class="max-w-xs space-y-3">
             <span class="">
-              <UsersIcon class="stroke-1.5 size-10" />
+              <LayersIcon class="stroke-1.5 size-10" />
             </span>
             <p class="font-bold">Software Systems Engineering</p>
             <p class="opacity-75">

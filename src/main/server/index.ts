@@ -122,7 +122,7 @@ function formatChunkResponse(assistantContent: any, finishReason: string | null 
   };
 }
 
-app.get('/v1/chat/completions', async (req, res) => {
+app.post('/v1/chat/completions', async (req, res) => {
   const body = req.body;
   // check if body is valid
   if (!body || !body.messages || !Array.isArray(body.messages) || body.messages.length === 0) {
