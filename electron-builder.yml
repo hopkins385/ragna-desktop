@@ -10,13 +10,10 @@ files:
   - '!{.eslintignore,.eslintrc.cjs,.eslint.config.js,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
-  # - '!node_modules/node-llama-cpp/llamaBins/*'
-  # - 'node_modules/node-llama-cpp/llamaBins/${os}-${arch}*/**/*'
-  # - '!node_modules/node-llama-cpp/llama/localBuilds/*'
-  # - 'node_modules/node-llama-cpp/llama/localBuilds/${os}-${arch}*/**/*'
 asarUnpack:
   - resources/**
-  - node_modules/node-llama-cpp
+  - node_modules/node-llama-cpp/bins
+  - node_modules/node-llama-cpp/llama/localBuilds
 win:
   executableName: ragna-desktop
 nsis:

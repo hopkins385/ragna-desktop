@@ -6,7 +6,6 @@ export class ChatService {
   constructor(private chatRepository: Repository<Chat>) {}
 
   async getChatById(id: string): Promise<Chat | null> {
-    console.log('getChatById', id);
     return this.chatRepository.findOne({
       where: { id },
       relations: { messages: true }

@@ -102,7 +102,9 @@
 
   onMounted(async () => {
     await initChat();
-    scrollToBottom(chatMessagesContainerRef.value, { behavior: 'instant' });
+    if (chatMessagesContainerRef.value && chat.hasMessages === true) {
+      scrollToBottom(chatMessagesContainerRef.value, { behavior: 'instant' });
+    }
     registerStreamResponseListener();
     registerIsStreamingListener();
   });

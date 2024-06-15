@@ -85,25 +85,38 @@ export function handleInferenceIPCs() {
   });
 
   // init history from chat
-  ipcMain.handle('init-llm-history-from-chat', async (_, chatId) => {
-    if (!chatId) {
-      logger.error('[server] cannot init chat histroy because chatId is not provided');
-      return;
-    }
-    const chat = await chatService.getChatById(chatId);
-    if (!chat) {
-      logger.error('[server] Chat not found');
-      return;
-    }
+  ipcMain.handle(
+    'init-llm-history-from-chat',
+    async (_, payload: { chatId: string; systemPrompt: string }) => {
+      if (!payload.chatId) {
+        logger.error('[server] cannot init chat histroy because chatId is not provided');
+        return;
+      }
+      const chat = await chatService.getChatById(payload.chatId);
+      if (!chat) {
+        logger.error('[server] Chat not found');
+        return;
+      }
 
-    const res = await inferenceService.setSessionHistory(chat.messages);
-    if (!res) {
-      logger.error('[server] Failed to init llm session history');
-      return;
-    }
+      // add system prompt to chat
+      const systemMessagePayload = {
+        id: 'system-prompt',
+        role: 'system',
+        content: payload.systemPrompt
+      } as ChatMessage;
 
-    return chat;
-  });
+      const res = await inferenceService.setSessionHistory([
+        systemMessagePayload,
+        ...chat.messages
+      ]);
+      if (!res) {
+        logger.error('[server] Failed to init llm session history');
+        return;
+      }
+
+      return chat;
+    }
+  );
 
   interface RequestLlmPayload {
     prompt: string;

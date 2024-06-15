@@ -53,10 +53,10 @@ export default function useChat() {
   async function initChatMessages() {
     if (!chat.getChatId) return;
     try {
-      const resChat = await window.electron.ipcRenderer.invoke(
-        'init-llm-history-from-chat',
-        chat.getChatId
-      );
+      const resChat = await window.electron.ipcRenderer.invoke('init-llm-history-from-chat', {
+        chatId: chat.getChatId,
+        systemPrompt: chatSettings.getSystemPrompt
+      });
       if (!resChat) {
         throw new Error('Failed to initialize chat messages. Is the model loaded?');
       }

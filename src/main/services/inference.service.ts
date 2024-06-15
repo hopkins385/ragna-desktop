@@ -327,7 +327,7 @@ export class InferenceService {
 
     this.chatSession.setChatHistory(chatHistoryItems);
 
-    console.log('Chat history set', chatHistoryItems);
+    // console.log('Chat history set', chatHistoryItems);
 
     return true;
   }

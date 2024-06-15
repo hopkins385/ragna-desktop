@@ -1,5 +1,8 @@
 <script setup lang="ts">
   import IconRagna from '@/assets/svg/ragna-logo-min.svg';
+  import { ComponentIcon, SquareArrowOutUpRightIcon, UsersIcon } from 'lucide-vue-next';
+
+  const emailHref = 'mailto:hello@ragna-ai.com';
 </script>
 
 <template>
@@ -11,36 +14,99 @@
         </div>
         <h1 class="text-3xl font-semibold">RAGNA Desktop</h1>
       </div>
-      <p class="text-xl">My Private Artificial Intelligence</p>
+      <p class="text-xl">My Private Artificial Intelligence. 100% Private. 100% Secure.</p>
     </div>
-    <div class="py-12">
-      <ul class="flex items-center justify-center space-x-4">
-        <li>
-          <span class="cursor-pointer underline" @click="$router.push('models')">
-            Download Free Models
-          </span>
-        </li>
-        <li>|</li>
-        <li>
-          <a href="mailto:info@ragna.app" target="_blank" class="cursor-pointer underline">
-            Need Consulting? Get in touch with us!
-          </a>
-        </li>
-        <li>|</li>
-        <li>
-          <a href="https://discord.gg/wWfU7kBRC3" target="_blank" class="cursor-pointer underline">
-            Join Discord
-          </a>
-        </li>
-      </ul>
-      <div class="py-20">
-        <div class="mx-auto w-fit max-w-lg rounded-md border p-5 text-sm">
-          <h2 class="font-semibold">Non-Commercial License</h2>
-          <p>You are using the free version of RAGNA Desktop.</p>
-          <p>
-            To unlock all features, and/or to use this software for commercial purposes, please
-            consider purchasing a license.
-          </p>
+    <div class="container mx-auto py-10 text-[#05154e]">
+      <div class="mx-auto w-fit rounded-md border-0 p-5 text-sm">
+        <div class="pb-10 text-center">
+          <h2 class="text-2xl font-semibold">Need Help? Our Services</h2>
+          <p class="pt-2">We offer a wide range of services to help you with your AI projects.</p>
+        </div>
+        <div class="grid gap-10 pt-5 lg:grid-cols-3">
+          <div class="max-w-xs space-y-3">
+            <span class="">
+              <UsersIcon class="stroke-1.5 size-10" />
+            </span>
+            <p class="font-bold">Process Automation Consulting</p>
+            <p class="opacity-75">
+              We analyse existing processes to identify areas that can be automated by AI for
+              improved efficiency.
+            </p>
+            <span class="flex items-center space-x-1 opacity-75">
+              <a class="hover:underline" :href="emailHref">More Info</a>
+              <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
+            </span>
+          </div>
+          <div class="max-w-xs space-y-3">
+            <span class="">
+              <ComponentIcon class="stroke-1.5 size-10" />
+            </span>
+            <p class="font-bold">Design-Thinking-Workshops</p>
+            <p class="opacity-75">
+              Discover innovative problem-solving options in a Design Thinking Workshop and develop
+              AI powered prototypes to create new customer and employee experiences.
+            </p>
+            <span class="flex items-center space-x-1 opacity-75">
+              <a class="hover:underline" :href="emailHref">More Info</a>
+              <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
+            </span>
+          </div>
+          <div class="max-w-xs space-y-3">
+            <span class="">
+              <UsersIcon class="stroke-1.5 size-10" />
+            </span>
+            <p class="font-bold">Tailored Know-How Transfer</p>
+            <p class="opacity-75">
+              Empower your team with the expertise and knowledge needed to leverage the new AI
+              technology. We ensure your staff is equipped with the skills and knowledge needed.
+            </p>
+            <span class="flex items-center space-x-1 opacity-75">
+              <a class="hover:underline" :href="emailHref">More Info</a>
+              <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
+            </span>
+          </div>
+          <div class="max-w-xs space-y-3">
+            <span class="">
+              <UsersIcon class="stroke-1.5 size-10" />
+            </span>
+            <p class="font-bold">Proof of Concept (PoC)</p>
+            <p class="opacity-75">
+              We turn your innovative ideas into tangible prototypes, demonstrating feasibility and
+              unlocking new opportunities for your business.
+            </p>
+            <span class="flex items-center space-x-1 opacity-75">
+              <a class="hover:underline" :href="emailHref">More Info</a>
+              <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
+            </span>
+          </div>
+          <div class="max-w-xs space-y-3">
+            <span class="">
+              <UsersIcon class="stroke-1.5 size-10" />
+            </span>
+            <p class="font-bold">Turn-Key Software Solutions</p>
+            <p class="opacity-75">
+              Ready-to-deploy, fully integrated software systems tailored to drive immediate
+              results.
+            </p>
+            <span class="flex items-center space-x-1 opacity-75">
+              <a class="hover:underline" :href="emailHref">More Info</a>
+              <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
+            </span>
+          </div>
+          <div class="max-w-xs space-y-3">
+            <span class="">
+              <UsersIcon class="stroke-1.5 size-10" />
+            </span>
+            <p class="font-bold">Software Systems Engineering</p>
+            <p class="opacity-75">
+              We design and specify robust and scalable software solutions tailored to your unique
+              requirements.
+            </p>
+            <span class="flex items-center space-x-1 opacity-75">
+              <a class="hover:underline" :href="emailHref">More Info</a>
+              <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
+            </span>
+          </div>
         </div>
       </div>
     </div>
