@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue';
+  import { onMounted, onUnmounted, ref } from 'vue';
   import LayoutDefault from '@renderer/layout/LayoutDefault.vue';
   import HeadingTitle from '@/components/heading/HeadingTitle.vue';
   import { computedAsync, useMutationObserver } from '@vueuse/core';
@@ -80,14 +80,6 @@
     refreshTrigger.value += 1;
     toast.success({ message: 'Chat deleted' });
   }
-
-  onMounted(() => {
-    // apply to div id="main"
-    const main = document.getElementById('main');
-    if (main) {
-      main.style.overflow = 'hidden';
-    }
-  });
 </script>
 
 <template>

@@ -28,10 +28,7 @@
       <NavBar />
       <!-- Main Content Container -->
       <!-- Warning: Do not remove id="main", its being queried! -->
-      <div
-        id="main"
-        class="no-scrollbar size-full overflow-x-hidden overflow-y-scroll border-l border-t bg-white"
-      >
+      <div id="main" class="no-scrollbar size-full overflow-hidden border-l border-t bg-white">
         <router-view />
       </div>
     </div>

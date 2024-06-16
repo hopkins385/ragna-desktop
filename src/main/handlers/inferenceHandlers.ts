@@ -44,7 +44,7 @@ export function handleInferenceIPCs() {
       gpuLayers,
       useMlock
     });
-    console.log('Load-LLM result: ', result);
+    // console.log('Load-LLM result: ', result);
     return { success: result };
   });
 
@@ -65,7 +65,7 @@ export function handleInferenceIPCs() {
     const { systemPrompt } = payload;
     const result = await inferenceService.createSession(systemPrompt);
     const chat = await chatService.createNewChat({ title: 'New Chat' });
-    console.log('New chat created: ', chat);
+    // console.log('New chat created: ', chat);
     return chat;
   });
 
@@ -180,7 +180,7 @@ export function handleInferenceIPCs() {
 
       // Add assistant message to chat
       const chat = await chatService.createNewChatMessage(chatId, assistantMessagePayload);
-      console.log('Chat updated: ', chat);
+      // console.log('Chat updated: ', chat);
       //
       return assistantResponseMessage;
       //
