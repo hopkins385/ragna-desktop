@@ -9,7 +9,6 @@ import { handleDownloadIPCs } from './handlers/downloadHandlers';
 import { handleLogsIPCs } from './handlers/logsHandlers';
 import { handleUpdateIPCs } from './handlers/updateHandlers';
 import { handleFileIPCs } from './handlers/fileHandlers';
-// import { createMenu } from './utils/menu';
 import { handleInferenceIPCs } from './handlers/inferenceHandlers';
 import { handleDatabaseIPCs } from './handlers/databaseHandlers';
 import { globalDatabaseConn } from './database/connection';
@@ -20,6 +19,7 @@ import { handleServerIPCs } from './handlers/serverHandlers';
 import { initSentry } from './handlers/sentryHandlers';
 import { handleModelPathIPCs } from './handlers/modelPathHandlers';
 import { handleModelSettingsIPCs } from './handlers/modelSettingsHandlers';
+import { createMenu } from './utils/menu';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 
@@ -117,7 +117,7 @@ app
   .then(setAppId)
   .then(addDevToolsListener)
   .then(registerHandlers)
-  // .then(createMenu)
+  .then(createMenu)
   .then(createWindow)
   // .then(initUpdater)
   .then(() => {
