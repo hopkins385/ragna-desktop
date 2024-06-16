@@ -6,7 +6,13 @@ const chatService = new ChatService(ChatRepository);
 
 export function handleChatIPCs() {
   ipcMain.handle('get-all-chats', async () => {
-    const chats = await chatService.getAllChatsPaginated();
+    const chats = await chatService.getAllChats();
+    return chats;
+  });
+
+  ipcMain.handle('get-all-chats-paginated', async (_, data) => {
+    const payload = { search: data?.search, page: data?.page, limit: data?.limit };
+    const chats = await chatService.getAllChatsPaginated(payload);
     return chats;
   });
 

@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 import Chat from '../pages/chat.vue';
-import ChatHistory from '../pages/chat-history.vue';
+import ChatHistory from '../pages/chat-history-v2.vue';
 import About from '../pages/about.vue';
 import Models from '../pages/models.vue';
 import Settings from '../pages/settings.vue';

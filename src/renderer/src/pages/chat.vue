@@ -117,7 +117,7 @@
 </script>
 
 <template>
-  <LayoutDefault>
+  <LayoutDefault class="h-full">
     <div class="mt-5 flex w-full items-center border-0">
       <!-- AI Model Selector -->
       <div class="mx-5 flex w-full items-center space-x-5 text-slate-600">
@@ -172,7 +172,7 @@
     <div
       id="chatMessagesContainer"
       ref="chatMessagesContainerRef"
-      class="no-scrollbar relative mt-5 grow overflow-scroll rounded-lg border bg-white py-5 pl-10 pr-16"
+      class="no-scrollbar relative mt-5 h-full overflow-scroll rounded-lg border bg-white py-5 pl-10 pr-16"
     >
       <!-- Chat System Prompt -->
       <ChatSystemPrompt />

@@ -43,6 +43,22 @@ export default function useChat() {
     isStreaming.value = value;
   }
 
+  async function getChatById(id: string) {
+    const result = await window.electron.ipcRenderer.invoke('get-chat-by-id', id);
+    return result;
+  }
+
+  async function getAllChats() {
+    const result = await window.electron.ipcRenderer.invoke('get-all-chats');
+    return result;
+  }
+
+  async function getAllChatsPaginated(page = 1, limit = 10) {
+    const payload = { page, limit };
+    const result = await window.electron.ipcRenderer.invoke('get-all-chats-paginated', payload);
+    return result;
+  }
+
   async function initChat() {
     if (!modelStore.isModelLoaded) return;
     if (!chat.getChatId) {
@@ -245,6 +261,9 @@ export default function useChat() {
     assistantIsThinking,
     streamResponse,
     userInput,
+    getChatById,
+    getAllChats,
+    getAllChatsPaginated,
     initChat,
     initChatMessages,
     setUserInput,
