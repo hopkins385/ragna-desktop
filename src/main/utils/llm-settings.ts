@@ -1,6 +1,9 @@
 import { getAppStorage } from './store';
 import { platform } from '@electron-toolkit/utils';
 
+const defaultContextSize = 2048;
+const defaultUseMlock = false;
+
 export function setLlmContextSize(contextSize: number): void {
   const store = getAppStorage();
   store.set('llm-context-size', contextSize);
@@ -8,7 +11,6 @@ export function setLlmContextSize(contextSize: number): void {
 
 export function getLlmContextSize(): number {
   const store = getAppStorage();
-  const defaultContextSize = 2048;
   const contextSize = store.get('llm-context-size', defaultContextSize) as number;
   return contextSize;
 }
@@ -19,15 +21,15 @@ export function setLlmGpuLayers(gpuLayers: number): void {
 }
 
 export function getLlmGpuLayers(): number {
-  const store = getAppStorage();
   const defaultGpuLayers = platform.isMacOS ? -1 : 0;
+
+  const store = getAppStorage();
   const gpuLayers = store.get('gpu_layers', defaultGpuLayers) as number;
   return gpuLayers;
 }
 
 export function getLlmUseMlock(): boolean {
   const store = getAppStorage();
-  const defaultUseMlock = true;
   const useMlock = store.get('use_mlock', defaultUseMlock) as boolean;
   return useMlock;
 }

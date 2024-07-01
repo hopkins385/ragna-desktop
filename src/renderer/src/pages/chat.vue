@@ -19,11 +19,10 @@
   import { useScroll as useVueUseScroll } from '@vueuse/core';
   import useDocuments from '@renderer/composables/useDocuments';
   import useToast from '@renderer/composables/useToast';
-  import { Loader2Icon, Paperclip } from 'lucide-vue-next';
+  // import { Loader2Icon, Paperclip } from 'lucide-vue-next';
   import useEmbeddings from '@renderer/composables/useEmbeddings';
   import useHostFiles from '@renderer/composables/useHostFiles';
   import AttachedFile from '@renderer/components/attached/AttachedFile.vue';
-  import { has } from 'markdown-it/lib/common/utils';
 
   const {
     onLoadModel,
@@ -131,7 +130,7 @@
   );
 
   async function onSubmitUserInput() {
-    let res: string | null = null;
+    let res: string | undefined = undefined;
     if (submitLocked.value) return;
     if (userInput.value.trim() === '') return;
     // if (hasAttachedDocument.value) {
@@ -167,7 +166,7 @@
   }
 
   onMounted(async () => {
-    await initAttachedDocument();
+    // await initAttachedDocument();
     //
     await initChat();
     //

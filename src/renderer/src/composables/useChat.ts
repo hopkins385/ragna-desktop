@@ -155,7 +155,6 @@ export default function useChat() {
     if (!modelStore.isModelLoaded || isStreaming.value === true) return;
     if (userInput.value.length < 1) return;
     if (!chat.getChatId) {
-      //await newChatSession()
       console.error('Chat ID not found');
       return;
     }
@@ -193,7 +192,7 @@ export default function useChat() {
 
   async function onRunExample(prompt: string) {
     userInput.value = prompt;
-    await submitUserInput();
+    await submitUserInput({});
   }
 
   /**
