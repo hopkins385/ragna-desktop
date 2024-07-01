@@ -11,7 +11,7 @@
 
   const gpuAcceleration = ref(false);
   const hasGpu = ref(true);
-  const contextSize = ref(2048);
+  const contextSize = ref('auto');
   const useMlock = ref(false);
   const model = useModelStore();
   // const { getGpuInfo } = useGpuHardware()
@@ -106,14 +106,14 @@
     }
   }
 
-  watch(
-    () => contextSize.value,
-    async (value) => await updateContextSize(value)
-  );
+  // watch(
+  //   () => contextSize.value,
+  //   async (value) => await updateContextSize(value)
+  // );
 
   onMounted(async () => {
     gpuAcceleration.value = await getGpuAccelerationState();
-    contextSize.value = await getContextSize();
+    // contextSize.value = await getContextSize();
     useMlock.value = await getUseMlock();
     // await initGpuInfo()
   });
@@ -170,13 +170,14 @@
       <div class="space-y-0.5">
         <FormLabel class="text-base"> LLM Context Size </FormLabel>
         <FormDescription class="pr-10">
-          The higher the context size, the more tokens the model can process. But be careful, as
-          increasing the context size can lead to a very high memory usage and potentially crash the
-          app or freeze your system. If you are experiencing issues, try to reduce this value.
+          The higher the context size, the more tokens the model can process. <br />Auto: Adapt to
+          the current available VRAM and attemp to set the context size as high as possible up to
+          the size the model was trained on.
         </FormDescription>
       </div>
       <FormControl class="">
-        <Input v-model="contextSize" class="w-20 text-right" />
+        <!--  -->
+        <Input v-model="contextSize" :disabled="true" class="w-20 text-right" />
       </FormControl>
     </FormItem>
   </FormField>

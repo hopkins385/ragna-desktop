@@ -17,11 +17,18 @@
   import useScroll from '@renderer/composables/useScroll';
   import { useMutationObserver, useEventListener } from '@vueuse/core';
   import { useScroll as useVueUseScroll } from '@vueuse/core';
+  import useDocuments from '@renderer/composables/useDocuments';
+  import useToast from '@renderer/composables/useToast';
+  import { Loader2Icon, Paperclip } from 'lucide-vue-next';
+  import useEmbeddings from '@renderer/composables/useEmbeddings';
+  import useHostFiles from '@renderer/composables/useHostFiles';
+  import AttachedFile from '@renderer/components/attached/AttachedFile.vue';
+  import { has } from 'markdown-it/lib/common/utils';
 
   const {
     onLoadModel,
     onEjectModel,
-    onSubmitUserInput,
+    submitUserInput,
     onRunExample,
     onStopStreaming,
     initChat,
@@ -37,19 +44,40 @@
     userInput
   } = useChat();
 
+  const attachedDocument = ref(null);
+
   const chatMessagesContainerRef = ref<HTMLElement | null>(null);
   const autoScrollLocked = ref(false);
 
   const chat = useChatStore();
   const model = useModelStore();
+  const toast = useToast();
+
+  const { getFirstDocument } = useDocuments();
+  const { embedFile, similaritySearch, embeddingIsLoading, searchIsLoading } = useEmbeddings();
+  const { openFileDialog, fileDialogIsLoading } = useHostFiles();
 
   const submitLocked = computed(() => {
     return (
       !userInput.value ||
       userInput.value.trim() === '' ||
       isStreaming.value === true ||
+      assistantIsThinking.value === true ||
       model.isModelLoadingInProgress === true ||
-      model.isModelLoaded === false
+      model.isModelLoaded === false ||
+      embeddingIsLoading.value === true ||
+      fileDialogIsLoading.value === true
+    );
+  });
+
+  const embeddingLocked = computed(() => {
+    return (
+      model.isModelLoaded === false ||
+      model.isModelLoadingInProgress === true ||
+      isStreaming.value === true ||
+      assistantIsThinking.value === true ||
+      embeddingIsLoading.value === true ||
+      fileDialogIsLoading.value === true
     );
   });
 
@@ -66,6 +94,8 @@
   const showWelcome = computed(() => {
     return chat.hasMessages === false && model.isModelLoaded === false;
   });
+
+  const hasAttachedDocument = computed(() => attachedDocument.value !== null);
 
   const { arrivedState } = useVueUseScroll(chatMessagesContainerRef);
   const { scrollToBottom } = useScroll();
@@ -100,8 +130,47 @@
     }
   );
 
+  async function onSubmitUserInput() {
+    let res: string | null = null;
+    if (submitLocked.value) return;
+    if (userInput.value.trim() === '') return;
+    // if (hasAttachedDocument.value) {
+    //   res = await similaritySearch({ query: userInput.value });
+    // }
+    await submitUserInput({ context: res });
+  }
+
+  async function initAttachedDocument() {
+    attachedDocument.value = await getFirstDocument();
+  }
+
+  async function onOpenAndEmbedFile() {
+    if (!model.isModelLoaded) {
+      toast.error({ message: 'Please load a model first' });
+      return;
+    }
+    if (fileDialogIsLoading.value || embeddingIsLoading.value || model.isModelLoadingInProgress)
+      return;
+
+    const path = await openFileDialog();
+    if (!path) return;
+
+    try {
+      await embedFile(path);
+    } catch (error) {
+      console.error(error);
+      toast.error({ message: 'Failed to process file' });
+      return;
+    }
+
+    await initAttachedDocument();
+  }
+
   onMounted(async () => {
+    await initAttachedDocument();
+    //
     await initChat();
+    //
     if (chatMessagesContainerRef.value && chat.hasMessages === true) {
       scrollToBottom(chatMessagesContainerRef.value, { behavior: 'instant' });
     }
@@ -168,6 +237,9 @@
         />
       </Button>
     </div>
+    <div v-if="hasAttachedDocument || embeddingIsLoading" class="absolute left-10 top-20 z-20">
+      <AttachedFile :is-loading="embeddingIsLoading" @remove="() => (attachedDocument = null)" />
+    </div>
     <!-- Chat Messages Container -->
     <div
       id="chatMessagesContainer"
@@ -196,13 +268,27 @@
     </div>
     <!-- Input -->
     <div class="flex h-20 shrink-0 items-center justify-center">
+      <!-- File Dialog -->
+      <!--
+      <Button
+        :disabled="embeddingLocked"
+        variant="outline"
+        size="icon"
+        class="mr-2"
+        @click="() => onOpenAndEmbedFile()"
+      >
+        <Loader2Icon v-if="fileDialogIsLoading" class="stroke-1.5 size-4 animate-spin" />
+        <Paperclip v-else class="stroke-1.5 size-4 -rotate-45" />
+      </Button>
+      -->
+      <!-- User Input -->
       <form class="relative h-fit w-full" @submit.prevent="onSubmitUserInput">
         <Input ref="inputRef" v-model="userInput" type="text" placeholder="" class="!pr-10" />
-        <div
+        <button
           v-if="!isStreaming"
+          type="submit"
           class="absolute right-2 top-1/2 cursor-pointer rounded-lg p-2 hover:bg-slate-100"
           style="transform: translateY(-50%)"
-          @click="onSubmitUserInput"
         >
           <Icon
             name="send"
@@ -212,15 +298,15 @@
               'text-primary': !submitLocked
             }"
           />
-        </div>
-        <div
+        </button>
+        <button
           v-else
           class="absolute right-0 top-1/2 cursor-pointer rounded-lg p-2"
           style="transform: translateY(-50%)"
           @click="onStopStreaming"
         >
           <LoadingSquareIcon />
-        </div>
+        </button>
       </form>
     </div>
   </LayoutDefault>

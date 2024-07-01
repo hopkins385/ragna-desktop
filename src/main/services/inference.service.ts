@@ -74,43 +74,7 @@ export class InferenceService {
   }
 
   async warumUpModel(signal: AbortSignal) {
-    if (!this.model || this.modelState !== 'loaded') {
-      throw new Error('Model is not loaded');
-    }
-
-    const contextSize = this.getContextSize();
-
-    try {
-      // warm up the model with a dummy prompt
-      const context = await this.model.createContext({
-        createSignal: signal,
-        contextSize: Math.min(contextSize, this.model.trainContextSize)
-      });
-      const chatSession = new LlamaChatSession({
-        contextSequence: context.getSequence()
-      });
-
-      if (!context) {
-        throw new Error('Failed to create warmup context');
-      }
-
-      if (!chatSession) {
-        throw new Error('Failed to create warmup chat session');
-      }
-
-      await chatSession.prompt('hello', {
-        maxTokens: 1
-      });
-      chatSession.dispose();
-      context.dispose();
-    } catch (err: any) {
-      if (err?.name === 'AbortError') {
-        console.log('Warmup aborted');
-        return;
-      }
-      logger.error('Failed to warm up model %s', err);
-      throw new Error('Failed to warm up model');
-    }
+    throw new Error('Not implemented');
   }
 
   setModelLoadingState(state: 'loading' | 'loaded' | 'unloaded') {
@@ -152,7 +116,7 @@ export class InferenceService {
     console.log('Loading model', {
       path: payload.modelPath,
       gpuLayers,
-      contextSize: this.getContextSize(),
+      // contextSize: this.getContextSize(),
       useMlock: payload.useMlock
     });
 
@@ -182,15 +146,6 @@ export class InferenceService {
       this.setModelLoadingState('unloaded');
       return false;
     }
-
-    /*
-    // This is causing crashed on Windows. Disabled for now.
-    try {
-      await this.warumUpModel(this.abortLoadModelController.signal);
-    } catch (err: any) {
-      logger.error('Failed to warm up model %s', err);
-      return false;
-    }*/
 
     try {
       const context = await this.createContext(this.abortLoadModelController.signal);
@@ -250,12 +205,12 @@ export class InferenceService {
       throw new Error('Model is not loaded');
     }
 
-    const contextSize = this.getContextSize();
+    // const contextSize = this.getContextSize();
 
     try {
       const context = await this.model.createContext({
         createSignal: signal,
-        contextSize: Math.min(contextSize, this.model.trainContextSize)
+        contextSize: 'auto' //Math.min(contextSize, this.model.trainContextSize)
       });
 
       return context;
@@ -333,9 +288,17 @@ export class InferenceService {
   }
 
   async runInference(
-    payload: { prompt: string; temperature: number; maxTokens: number; history?: ChatMessage[] },
+    payload: {
+      prompt: string;
+      temperature: number;
+      maxTokens: number;
+      history?: ChatMessage[];
+      context?: string;
+    },
     newChunkCallback: (text: string) => void
   ) {
+    let prompt = payload.prompt;
+
     if (!this.model || this.modelState !== 'loaded') {
       throw new Error('Model is not loaded');
     }
@@ -349,8 +312,18 @@ export class InferenceService {
       await this.setSessionHistory(payload.history);
     }
 
+    if (payload.context) {
+      prompt = `context: """ ${payload.context} """\n${payload.prompt}`;
+    }
+
+    console.log('Running inference', {
+      prompt,
+      temperature: payload.temperature,
+      maxTokens: payload.maxTokens
+    });
+
     try {
-      return await this.chatSession.prompt(payload.prompt, {
+      return await this.chatSession.prompt(prompt, {
         signal: this.inferenceAbortController.signal,
         stopOnAbortSignal: true,
         temperature: payload.temperature,

@@ -113,7 +113,11 @@
       </div>
     </div>
     <div class="rounded-xl border p-5">
-      <DocumentTable :documents="documents" @delete="(id) => onDeleteDocument(id)" @open="" />
+      <DocumentTable
+        :documents="documents"
+        @delete="(id) => onDeleteDocument(id)"
+        @open="() => {}"
+      />
     </div>
   </LayoutDefault>
 </template>

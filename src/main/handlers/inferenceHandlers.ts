@@ -16,6 +16,7 @@ interface InferencePayload {
   temperature: number;
   maxTokens: number;
   history?: ChatMessage[];
+  context?: string;
 }
 
 async function runInference(payload: InferencePayload) {
@@ -124,6 +125,7 @@ export function handleInferenceIPCs() {
     maxTokens: number;
     history?: any[];
     chatId?: string;
+    context?: string;
   }
 
   // editor completion
@@ -151,6 +153,7 @@ export function handleInferenceIPCs() {
     const { prompt, temperature, maxTokens } = payload;
     const chatId = payload?.chatId || '';
     const history = payload?.history || [];
+    const context = payload?.context;
 
     const userMessagePayload = {
       role: 'user',
@@ -170,7 +173,8 @@ export function handleInferenceIPCs() {
         prompt,
         temperature,
         maxTokens,
-        history
+        history,
+        context
       });
 
       const assistantMessagePayload = {

@@ -1,12 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-import Chat from '../pages/chat.vue';
-import ChatHistory from '../pages/chat-history-v2.vue';
-import About from '../pages/about.vue';
-import Models from '../pages/models.vue';
-import Settings from '../pages/settings.vue';
-import Editor from '../pages/editor.vue';
-import Files from '../pages/files.vue';
+import Chat from '@renderer/pages/chat.vue';
+import ChatHistory from '@renderer/pages/chat-history.vue';
+import About from '@renderer/pages/about.vue';
+import Models from '@renderer/pages/models.vue';
+import Settings from '@renderer/pages/settings.vue';
+import Editor from '@renderer/pages/editor.vue';
 
 const routes = [
   { path: '/', component: Chat },
@@ -15,7 +14,6 @@ const routes = [
   { path: '/models', component: Models },
   { path: '/settings', component: Settings },
   { path: '/editor', component: Editor },
-  { path: '/files', component: Files },
   { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
 

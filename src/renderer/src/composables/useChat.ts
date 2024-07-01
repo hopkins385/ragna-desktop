@@ -59,7 +59,10 @@ export default function useChat() {
     return result;
   }
 
-  async function initChat() {
+  /**
+   * Creates a new chat session if a model is loaded and no chat session exists.
+   */
+  async function initChat(): Promise<void> {
     if (!modelStore.isModelLoaded) return;
     if (!chat.getChatId) {
       await newChatSession();
@@ -148,7 +151,7 @@ export default function useChat() {
     }
   }
 
-  async function onSubmitUserInput() {
+  async function submitUserInput(payload: { context?: string }) {
     if (!modelStore.isModelLoaded || isStreaming.value === true) return;
     if (userInput.value.length < 1) return;
     if (!chat.getChatId) {
@@ -167,6 +170,7 @@ export default function useChat() {
       const response = await window.electron.ipcRenderer.invoke('chat-completion', {
         chatId: chat.getChatId,
         prompt,
+        context: payload?.context,
         temperature: chatSettings.getTemperature,
         maxTokens: chatSettings.getMaxTokens
         // history: chat.getMessages // object cannot be cloned
@@ -189,9 +193,12 @@ export default function useChat() {
 
   async function onRunExample(prompt: string) {
     userInput.value = prompt;
-    await onSubmitUserInput();
+    await submitUserInput();
   }
 
+  /**
+   * Creates a new chat session.
+   */
   async function newChatSession() {
     setRequestIsPending(true);
     try {
@@ -270,7 +277,7 @@ export default function useChat() {
     onRunExample,
     onLoadModel,
     onEjectModel,
-    onSubmitUserInput,
+    submitUserInput,
     onStopStreaming,
     newChatSession,
     onAbortLoadingModel,

@@ -1,24 +1,50 @@
-import type { Repository } from 'typeorm';
 import type { Connection } from 'vectordb';
 import { InferenceService } from './inference.service';
 import { MetricType } from 'vectordb';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { FileParserFactory } from '../factories/fileParserFactory';
 import { DocumentService } from './document.service';
-import { Embedding, EmbeddingChunk } from '../database/entities';
 
 // import { Schema, Field, Float32, FixedSizeList, Int32, Float16 } from 'apache-arrow'
+
+interface SimilaritySearchResult {
+  content: string;
+  distance: number;
+}
+
+interface FileContents {
+  fileName: string;
+  content: string;
+}
+
+async function getFileContents(filePath: string): Promise<FileContents> {
+  const parts = filePath.split('/');
+  const fileName = parts[parts.length - 1];
+  const factory = new FileParserFactory(filePath);
+  const content = await factory.loadData();
+  return {
+    fileName,
+    content
+  };
+}
+
+async function splitText(text: string) {
+  const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 1000,
+    chunkOverlap: 200
+  });
+  const documents = await splitter.createDocuments([text]);
+  return documents;
+}
 
 export class EmbeddingService {
   private readonly vectorDb: Connection;
   private readonly defaultTableName: string;
-  private readonly embeddingRepository: Repository<Embedding>;
   private readonly inferenceService: InferenceService;
   private readonly documentService: DocumentService;
 
   constructor(
     vectorDb: Connection,
-    embeddingRepository: Repository<Embedding>,
     inferenceService: InferenceService,
     documentService: DocumentService
   ) {
@@ -30,7 +56,6 @@ export class EmbeddingService {
     }
 
     this.vectorDb = vectorDb;
-    this.embeddingRepository = embeddingRepository;
     this.inferenceService = inferenceService;
     this.documentService = documentService;
     this.defaultTableName = 'documents';
@@ -41,27 +66,26 @@ export class EmbeddingService {
     return result.vector;
   }
 
-  async createNewTable(name: string) {
-    //
-    throw new Error('Not implemented');
-  }
-
-  async insertData(data: any, tableName: string = this.defaultTableName) {
-    const tableNames = await this.vectorDb.tableNames();
-    if (!tableNames.includes(tableName)) {
-      return this.vectorDb.createTable({ name: tableName, data });
+  async similaritySearch(payload: {
+    query: string;
+    limit?: number;
+  }): Promise<SimilaritySearchResult[]> {
+    if (!this.inferenceService.modelIsLoaded()) {
+      throw new Error('Model is not loaded');
     }
 
-    const table = await this.vectorDb.openTable(tableName);
-    return await table.add(data);
-  }
+    const table = await this.vectorDb.openTable(this.defaultTableName);
 
-  async search(queryInput: string, tableName: string = this.defaultTableName) {
-    const table = await this.vectorDb.openTable(tableName);
+    console.log('Searching query:', payload.query);
 
-    const vector = await this.getEmbeddingVector(queryInput);
+    const vector = await this.getEmbeddingVector(payload.query);
 
-    const dbQuery = table.search(vector).metricType(MetricType.Cosine).limit(2);
+    console.log('Vector is:', vector);
+
+    const dbQuery = table
+      .search(vector)
+      .metricType(MetricType.Cosine)
+      .limit(payload.limit ?? 4);
     const results = await dbQuery.execute();
 
     const response = results.map((result: any) => {
@@ -74,56 +98,35 @@ export class EmbeddingService {
     return response;
   }
 
-  async getFileContents(filePath: string): Promise<any> {
-    const parts = filePath.split('/');
-    const fileName = parts[parts.length - 1];
-    const factory = new FileParserFactory(filePath);
-    const content = await factory.loadData();
-    return {
-      fileName,
-      content
-    };
-  }
-
-  async splitText(text: string) {
-    const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
-      chunkOverlap: 200
-    });
-    const documents = await splitter.createDocuments([text]);
-    return documents;
-  }
-
-  async embedFile(path: string) {
+  async createEmbeddingsForFile(payload: { filePath: string; fileName?: string; fileId?: string }) {
     if (!this.inferenceService.modelIsLoaded()) {
       throw new Error('Model is not loaded');
     }
 
-    const { fileName, content: fileContent } = await this.getFileContents(path);
+    // Check if vector db exists
+    const tableNames = await this.vectorDb.tableNames();
+    if (tableNames.includes(this.defaultTableName)) {
+      // delete all embeddings
+      await this.deleteAllEmbeddings();
+    }
 
+    // Get file contents
+    const { fileName, content: fileContent } = await getFileContents(payload.filePath);
+
+    // Store file contents in database
     const documentEntity = await this.documentService.createNewDocument({
       title: fileName,
       content: fileContent,
       fileName: fileName,
-      filePath: path
+      filePath: payload.filePath
     });
 
-    // create embedding Entity
-    const newEmbeddingEntity = new Embedding();
-    newEmbeddingEntity.title = fileName;
-    newEmbeddingEntity.document = documentEntity;
-    const embeddingEntity = await this.embeddingRepository.save(newEmbeddingEntity);
-    // get the embedding entity with relation chunks
-    const embeddingEntityWithChunks = await this.embeddingRepository.findOne({
-      where: { id: embeddingEntity.id },
-      relations: { chunks: true }
-    });
-    if (!embeddingEntityWithChunks) {
-      throw new Error('Embedding entity not found');
+    if (!documentEntity) {
+      throw new Error('Error creating document entity');
     }
 
     // split text into chunks
-    const documents = await this.splitText(fileContent);
+    const documents = await splitText(fileContent);
 
     // get embedding vector for each chunk
     const vectorDbData = [] as any;
@@ -132,13 +135,8 @@ export class EmbeddingService {
       vectorDbData.push({
         vector: vector,
         content: document.pageContent,
-        metadata: document.metadata // TODO: add  embeddingId: embeddingEntity.id
+        metadata: document.metadata
       });
-
-      const embeddingChunk = new EmbeddingChunk();
-      embeddingChunk.embedding = embeddingEntity;
-      embeddingChunk.content = document.pageContent;
-      embeddingEntityWithChunks.chunks.push(embeddingChunk);
     }
 
     if (vectorDbData.length === 0) {
@@ -149,15 +147,33 @@ export class EmbeddingService {
     }
 
     console.log('Inserting data into vector db');
-    await this.insertData(vectorDbData);
-
-    console.log('Inserting data into embedding chunk entity');
-    await this.embeddingRepository.save(embeddingEntityWithChunks);
+    await this.createVectorDbTable(vectorDbData);
 
     return true;
   }
 
-  deleteAllEmbeddings(tableName: string = this.defaultTableName) {
-    return this.vectorDb.dropTable(tableName);
+  async createVectorDbTable(data: any, tableName: string = this.defaultTableName) {
+    const tableNames = await this.vectorDb.tableNames();
+    if (!tableNames.includes(tableName)) {
+      return this.vectorDb.createTable({ name: tableName, data });
+    }
+
+    const table = await this.vectorDb.openTable(tableName);
+    return await table.add(data);
+  }
+
+  async deleteEmbeddingsOfFile(fileId: string) {
+    throw new Error('Not implemented');
+  }
+
+  async deleteAllEmbeddings(tableName: string = this.defaultTableName) {
+    const res1 = this.documentService.deleteAllDocuments();
+    const res = this.vectorDb.dropTable(tableName);
+
+    await Promise.all([res1, res]);
+
+    console.log('Deleted all embeddings');
+
+    return true;
   }
 }

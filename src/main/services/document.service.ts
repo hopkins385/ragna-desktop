@@ -27,6 +27,15 @@ export class DocumentService {
     });
   }
 
+  async getFirstDocument(): Promise<Document | null> {
+    const all = await this.documentRepository.find({
+      select: {
+        id: true
+      }
+    });
+    return all[0] || null;
+  }
+
   async getDocumentById(id: string): Promise<Document | null> {
     return this.documentRepository.findOne({ where: { id } });
   }
@@ -51,6 +60,10 @@ export class DocumentService {
 
   async deleteDocument(id: string): Promise<void> {
     await this.documentRepository.delete(id);
+  }
+
+  async deleteAllDocuments(): Promise<void> {
+    await this.documentRepository.delete({});
   }
 
   async updateDocumentTitle(id: string, payload: { title: string }): Promise<Document> {

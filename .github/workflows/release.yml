@@ -22,7 +22,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '21.x'
+          node-version: '20.x'
           cache: 'npm'
 
       - name: Install Dependencies
@@ -35,21 +35,21 @@ jobs:
           APP_ARCH: 'x64'
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Sign files with Trusted Signing
-        if: matrix.os == 'windows-latest'
-        uses: azure/trusted-signing-action@v0.3.20
-        with:
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          endpoint: https://eus.codesigning.azure.net/
-          trusted-signing-account-name: vscx-codesigning
-          certificate-profile-name: vscx-certificate-profile
-          files-folder: ${{ github.workspace }}\dist
-          files-folder-filter: exe
-          file-digest: SHA256
-          timestamp-rfc3161: http://timestamp.acs.microsoft.com
-          timestamp-digest: SHA256
+      # - name: Sign files with Trusted Signing
+      #   if: matrix.os == 'windows-latest'
+      #   uses: azure/trusted-signing-action@v0.3.20
+      #   with:
+      #     azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+      #     endpoint: https://eus.codesigning.azure.net/
+      #     trusted-signing-account-name: vscx-codesigning
+      #     certificate-profile-name: vscx-certificate-profile
+      #     files-folder: ${{ github.workspace }}\dist
+      #     files-folder-filter: exe
+      #     file-digest: SHA256
+      #     timestamp-rfc3161: http://timestamp.acs.microsoft.com
+      #     timestamp-digest: SHA256
 
       - name: Build Mac
         if: matrix.os == 'macos-latest'

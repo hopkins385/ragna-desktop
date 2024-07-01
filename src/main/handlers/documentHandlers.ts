@@ -4,6 +4,10 @@ import { ipcMain } from 'electron';
 
 const documentService = new DocumentService(DocumentRepository);
 
+async function getFirstDocument() {
+  return await documentService.getFirstDocument();
+}
+
 async function getAllDocuments() {
   return await documentService.getAllDocuments();
 }
@@ -26,7 +30,8 @@ async function deleteDocument(id: string) {
 }
 
 export function handleDocumentIPCs() {
-  ipcMain.handle('gat-all-documents', async () => await getAllDocuments());
+  ipcMain.handle('get-first-document', async () => await getFirstDocument());
+  ipcMain.handle('get-all-documents', async () => await getAllDocuments());
   ipcMain.handle('get-document-by-id', async (_, id: string) => await getDocumentById(id));
   ipcMain.handle(
     'create-new-document',
