@@ -283,7 +283,8 @@ export class InferenceService {
 
     this.chatSession.setChatHistory(chatHistoryItems);
 
-    // console.log('Chat history set', chatHistoryItems);
+    // debug
+    if (is.dev) console.log('Chat history set', chatHistoryItems);
 
     return true;
   }
@@ -317,11 +318,14 @@ export class InferenceService {
       prompt = `context: """ ${payload.context} """\n${payload.prompt}`;
     }
 
-    console.log('Running inference', {
-      prompt,
-      temperature: payload.temperature,
-      maxTokens: payload.maxTokens
-    });
+    // debug
+    if (is.dev) {
+      console.log('Running inference', {
+        prompt,
+        temperature: payload.temperature,
+        maxTokens: payload.maxTokens
+      });
+    }
 
     try {
       return await this.chatSession.prompt(prompt, {

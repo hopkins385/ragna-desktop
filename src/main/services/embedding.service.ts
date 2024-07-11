@@ -4,6 +4,7 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { FileParserFactory } from '../factories/fileParserFactory';
 import { DocumentService } from './document.service';
 import { PipelineSingleton } from './transformer.service';
+import { is } from '@electron-toolkit/utils';
 // import { Schema, Field, Float32, FixedSizeList, Int32, Float16 } from 'apache-arrow'
 
 interface SimilaritySearchResult {
@@ -102,8 +103,10 @@ export class EmbeddingService {
 
     // filter out empty content and distance < 0.8
     const filteredResponse = response.filter((result) => result.content && result.distance < 0.8);
-
-    console.log('Filtered search results:', filteredResponse);
+    // debug
+    if (is.dev) {
+      console.log('Filtered search results:', filteredResponse);
+    }
 
     return filteredResponse;
   }
@@ -149,8 +152,11 @@ export class EmbeddingService {
     if (vectorDbData.length !== documents.length) {
       throw new Error(`vectorDbData and documents must have the same length`);
     }
+    // debug
+    if (is.dev) {
+      console.log('Inserting data into vector db');
+    }
 
-    console.log('Inserting data into vector db');
     await this.createVectorDbTable(vectorDbData);
 
     return true;
@@ -180,8 +186,10 @@ export class EmbeddingService {
     const dropVdbTable = this.vectorDb.dropTable(tableName);
 
     await Promise.all([delAllDocs, dropVdbTable]);
-
-    console.log('Deleted all embeddings');
+    // debug
+    if (is.dev) {
+      console.log('Deleted all embeddings');
+    }
 
     return true;
   }

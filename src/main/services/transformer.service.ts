@@ -7,8 +7,8 @@ import { is } from '@electron-toolkit/utils';
 export class PipelineSingleton {
   static task: PipelineType = 'feature-extraction';
   static model_name_or_path = 'Xenova/all-MiniLM-L6-v2';
-
   static quantized = false;
+
   static instance: FeatureExtractionPipelineType;
   static model_buffer = null;
   static tokenizer = null;
