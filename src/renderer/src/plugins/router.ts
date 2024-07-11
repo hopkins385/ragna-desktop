@@ -6,6 +6,7 @@ import About from '@renderer/pages/about.vue';
 import Models from '@renderer/pages/models.vue';
 import Settings from '@renderer/pages/settings.vue';
 import Editor from '@renderer/pages/editor.vue';
+import ChatPdf from '@renderer/pages/chat-pdf.vue';
 
 const routes = [
   { path: '/', component: Chat },
@@ -14,6 +15,7 @@ const routes = [
   { path: '/models', component: Models },
   { path: '/settings', component: Settings },
   { path: '/editor', component: Editor },
+  { path: '/chat-pdf', component: ChatPdf },
   { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
 

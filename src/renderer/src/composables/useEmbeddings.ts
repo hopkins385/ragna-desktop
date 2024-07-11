@@ -1,3 +1,4 @@
+import { useEmbeddingStore } from '@renderer/stores/embedding.store';
 import { ref } from 'vue';
 
 interface SimilaritySearchResult {
@@ -6,16 +7,29 @@ interface SimilaritySearchResult {
 }
 
 export default function useEmbeddings() {
+  const embeddingStore = useEmbeddingStore();
   const embeddingIsLoading = ref(false);
   const searchIsLoading = ref(false);
 
   async function embedFile(path: string) {
     embeddingIsLoading.value = true;
 
-    const result = await window.electron.ipcRenderer.invoke('embed-file', path);
-    embeddingIsLoading.value = false;
+    try {
+      const result = await window.electron.ipcRenderer.invoke('embed-file', path);
 
-    return result;
+      // TODO: this is a hack to set the embedding model as loaded but it should be done in the main process
+      // set the embedding model as loaded after first embedding
+      if (embeddingStore.isEmbeddingModelLoaded !== true) {
+        embeddingStore.setEmbeddingModelLoaded();
+      }
+
+      return result;
+    } catch (e) {
+      console.error('Failed to embed file', e);
+      throw e;
+    } finally {
+      embeddingIsLoading.value = false;
+    }
   }
 
   async function similaritySearchRaw(payload: {

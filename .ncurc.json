@@ -1,0 +1,3 @@
+{
+  "reject": ["fuse.js", "apache-arrow", "sqlite3"]
+}

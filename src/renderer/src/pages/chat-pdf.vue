@@ -82,7 +82,7 @@
   async function onSubmit() {
     isLoading.value = true;
     const query = input.value;
-    const result = await window.electron.ipcRenderer.invoke('semantic-search', { query });
+    const result = await window.electron.ipcRenderer.invoke('similarity-search', { query });
     content.value = JSON.stringify(result, null, 2);
     isLoading.value = false;
   }
@@ -90,6 +90,16 @@
   onMounted(() => {
     refreshDocuments();
   });
+
+  async function transformerTest() {
+    const result = await window.electron.ipcRenderer.invoke('transformer-test');
+    console.log(result);
+  }
+
+  async function trackEvent(eventName: string) {
+    const result = await window.electron.ipcRenderer.invoke('track-event', eventName);
+    console.log(result);
+  }
 </script>
 
 <template>
@@ -100,6 +110,8 @@
       <div class="flex w-fit flex-col space-y-4">
         <Button @click="openFileDialog">Open File</Button>
         <Button @click="deleteAllEmbeddings">Delete All Embeddings</Button>
+        <Button @click="transformerTest">Transformer Test</Button>
+        <Button @click="trackEvent('Test Event')">Track Event</Button>
       </div>
       <div>
         <div v-if="isLoading">Loading...</div>

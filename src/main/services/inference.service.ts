@@ -15,12 +15,14 @@ import {
 import { is } from '@electron-toolkit/utils';
 import { logger } from '../utils/logger';
 
+type ModelLoadingState = 'loading' | 'loaded' | 'unloaded';
+
 export class InferenceService {
   private abortLoadModelController: AbortController;
   private inferenceAbortController: AbortController;
   private model: LlamaModel | null;
   private llama: Llama;
-  private modelState: 'loading' | 'loaded' | 'unloaded';
+  private modelState: ModelLoadingState;
   private chatSession: LlamaChatSession | null;
   private context: LlamaContext | null;
   private embeddingContext: LlamaEmbeddingContext | null;
@@ -38,10 +40,10 @@ export class InferenceService {
     this.contextSize = 2048;
   }
 
-  static async init() {
+  static async getInstance() {
     try {
       const binding = await getLlama({
-        logLevel: is.dev ? LlamaLogLevel.warn : LlamaLogLevel.error,
+        logLevel: is.dev ? LlamaLogLevel.info : LlamaLogLevel.error,
         logger(level, message) {
           // logger.log(level, message);
           console.log(level, message);
@@ -73,11 +75,7 @@ export class InferenceService {
     this.contextSize = size;
   }
 
-  async warumUpModel(signal: AbortSignal) {
-    throw new Error('Not implemented');
-  }
-
-  setModelLoadingState(state: 'loading' | 'loaded' | 'unloaded') {
+  setModelLoadingState(state: ModelLoadingState) {
     this.modelState = state;
   }
 
@@ -86,6 +84,7 @@ export class InferenceService {
     contextSize?: number;
     gpuLayers?: number;
     useMlock?: boolean;
+    flashAttention?: boolean;
   }) {
     this.abortLoadModelController = new AbortController();
 
@@ -117,7 +116,8 @@ export class InferenceService {
       path: payload.modelPath,
       gpuLayers,
       // contextSize: this.getContextSize(),
-      useMlock: payload.useMlock
+      useMlock: payload.useMlock,
+      flashAttention: payload.flashAttention
     });
 
     try {
@@ -127,7 +127,8 @@ export class InferenceService {
         // Mlock forces the system to keep the model in the RAM/VRAM
         useMlock: payload.useMlock || false,
         // Number of layers to store in VRAM
-        gpuLayers
+        gpuLayers,
+        defaultContextFlashAttention: payload.flashAttention || false
       });
       if (!model) {
         throw new Error('Failed to load model');
@@ -376,7 +377,7 @@ let inferenceService: InferenceService;
 
 async function inferenceServiceSingleton() {
   if (!inferenceService) {
-    inferenceService = await InferenceService.init();
+    inferenceService = await InferenceService.getInstance();
   }
   return inferenceService;
 }

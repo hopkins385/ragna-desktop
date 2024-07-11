@@ -1,10 +1,9 @@
-import type { Connection } from 'vectordb';
-import { InferenceService } from './inference.service';
+import type { Connection, EmbeddingFunction } from 'vectordb';
 import { MetricType } from 'vectordb';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { FileParserFactory } from '../factories/fileParserFactory';
 import { DocumentService } from './document.service';
-
+import { PipelineSingleton } from './transformer.service';
 // import { Schema, Field, Float32, FixedSizeList, Int32, Float16 } from 'apache-arrow'
 
 interface SimilaritySearchResult {
@@ -15,6 +14,29 @@ interface SimilaritySearchResult {
 interface FileContents {
   fileName: string;
   content: string;
+}
+
+const embedFn = {} as EmbeddingFunction<unknown>;
+async function getEmbedFunction() {
+  if (embedFn.sourceColumn) {
+    return embedFn;
+  }
+  const pipe = await PipelineSingleton.getInstance(); // (p) => console.log('Progress: ', p)
+
+  embedFn.sourceColumn = 'content';
+  embedFn.embed = async function (batch: string[]) {
+    const result: any[] = [];
+    // Given a batch of strings, we will use the `pipe` function to get
+    // the vector embedding of each string.
+    for (const text of batch) {
+      // 'mean' pooling and normalizing allows the embeddings to share the same length.
+      const res = await pipe(text, { pooling: 'mean', normalize: true });
+      result.push(Array.from(res['data']));
+    }
+    return result;
+  };
+
+  return embedFn;
 }
 
 async function getFileContents(filePath: string): Promise<FileContents> {
@@ -30,8 +52,8 @@ async function getFileContents(filePath: string): Promise<FileContents> {
 
 async function splitText(text: string) {
   const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 200
+    chunkSize: 500,
+    chunkOverlap: 100
   });
   const documents = await splitter.createDocuments([text]);
   return documents;
@@ -40,53 +62,36 @@ async function splitText(text: string) {
 export class EmbeddingService {
   private readonly vectorDb: Connection;
   private readonly defaultTableName: string;
-  private readonly inferenceService: InferenceService;
   private readonly documentService: DocumentService;
 
-  constructor(
-    vectorDb: Connection,
-    inferenceService: InferenceService,
-    documentService: DocumentService
-  ) {
+  constructor(vectorDb: Connection, documentService: DocumentService) {
     if (!vectorDb) {
       throw new Error('Vector database connection not established');
     }
-    if (!inferenceService) {
-      throw new Error('Inference service not established');
-    }
 
     this.vectorDb = vectorDb;
-    this.inferenceService = inferenceService;
     this.documentService = documentService;
+    // this.transformerService = transformerService;
     this.defaultTableName = 'documents';
-  }
-
-  async getEmbeddingVector(text: string) {
-    const result = await this.inferenceService.getVectorFor(text);
-    return result.vector;
   }
 
   async similaritySearch(payload: {
     query: string;
     limit?: number;
   }): Promise<SimilaritySearchResult[]> {
-    if (!this.inferenceService.modelIsLoaded()) {
-      throw new Error('Model is not loaded');
-    }
-
-    const table = await this.vectorDb.openTable(this.defaultTableName);
-
-    console.log('Searching query:', payload.query);
-
-    const vector = await this.getEmbeddingVector(payload.query);
-
-    console.log('Vector is:', vector);
+    const embeddingFn = await getEmbedFunction();
+    const table = await this.vectorDb.openTable(this.defaultTableName, embeddingFn);
 
     const dbQuery = table
-      .search(vector)
+      .search(payload.query)
       .metricType(MetricType.Cosine)
-      .limit(payload.limit ?? 4);
+      .limit(payload.limit ?? 2);
+
     const results = await dbQuery.execute();
+
+    if (!results) {
+      return [];
+    }
 
     const response = results.map((result: any) => {
       return {
@@ -95,14 +100,15 @@ export class EmbeddingService {
       };
     });
 
-    return response;
+    // filter out empty content and distance < 0.8
+    const filteredResponse = response.filter((result) => result.content && result.distance < 0.8);
+
+    console.log('Filtered search results:', filteredResponse);
+
+    return filteredResponse;
   }
 
   async createEmbeddingsForFile(payload: { filePath: string; fileName?: string; fileId?: string }) {
-    if (!this.inferenceService.modelIsLoaded()) {
-      throw new Error('Model is not loaded');
-    }
-
     // Check if vector db exists
     const tableNames = await this.vectorDb.tableNames();
     if (tableNames.includes(this.defaultTableName)) {
@@ -128,12 +134,10 @@ export class EmbeddingService {
     // split text into chunks
     const documents = await splitText(fileContent);
 
-    // get embedding vector for each chunk
+    // prepare data for vector db
     const vectorDbData = [] as any;
     for (const document of documents) {
-      const vector = await this.getEmbeddingVector(document.pageContent);
       vectorDbData.push({
-        vector: vector,
         content: document.pageContent,
         metadata: document.metadata
       });
@@ -153,9 +157,14 @@ export class EmbeddingService {
   }
 
   async createVectorDbTable(data: any, tableName: string = this.defaultTableName) {
+    const embeddingFn = await getEmbedFunction();
     const tableNames = await this.vectorDb.tableNames();
     if (!tableNames.includes(tableName)) {
-      return this.vectorDb.createTable({ name: tableName, data });
+      return this.vectorDb.createTable({
+        name: tableName,
+        data,
+        embeddingFunction: embeddingFn
+      });
     }
 
     const table = await this.vectorDb.openTable(tableName);
@@ -167,10 +176,10 @@ export class EmbeddingService {
   }
 
   async deleteAllEmbeddings(tableName: string = this.defaultTableName) {
-    const res1 = this.documentService.deleteAllDocuments();
-    const res = this.vectorDb.dropTable(tableName);
+    const delAllDocs = this.documentService.deleteAllDocuments();
+    const dropVdbTable = this.vectorDb.dropTable(tableName);
 
-    await Promise.all([res1, res]);
+    await Promise.all([delAllDocs, dropVdbTable]);
 
     console.log('Deleted all embeddings');
 

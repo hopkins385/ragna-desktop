@@ -1,52 +1,51 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { Separator } from '@ui/separator'
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@ui/form'
-import { Input } from '@ui/input'
-import { Button } from '@ui/button'
-import { Alert, AlertDescription, AlertTitle } from '@ui/alert'
-import { toast } from 'vue-sonner'
-import { AlertTriangleIcon } from 'lucide-vue-next'
+  import { onMounted } from 'vue';
+  import { Separator } from '@ui/separator';
+  import {
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+  } from '@ui/form';
+  import { Input } from '@ui/input';
+  import { Button } from '@ui/button';
+  import { Alert, AlertDescription, AlertTitle } from '@ui/alert';
+  import { toast } from 'vue-sonner';
+  import { AlertTriangleIcon } from 'lucide-vue-next';
+  import { useModelStore } from '@renderer/stores/model.store';
 
-const modelsFolderPath = ref('')
+  const model = useModelStore();
 
-const setModelsFolderPath = async () => {
-  // await window.api.setModelsFolderPath(modelsFolderPath.value)
-  await window.electron.ipcRenderer.invoke('set-models-folder-path', modelsFolderPath.value)
-  toast.success('AI Models folder path updated')
-}
+  const setModelsFolderPath = async (path: string) => {
+    // await window.api.setModelsFolderPath(modelsFolderPath.value)
+    await window.electron.ipcRenderer.invoke('set-models-folder-path', path);
+    model.setModelsFolderPath(path);
+    toast.success('AI Models folder path updated');
+  };
 
-const getModelsFolderPath = async () => {
-  const result = await window.electron.ipcRenderer.invoke('get-models-folder-path')
-  modelsFolderPath.value = result
-}
-
-const onOpenFolderDialog = async () => {
-  try {
-    const result = await window.electron.ipcRenderer.invoke('open-folder-dialog')
-    if (!result) return
-    modelsFolderPath.value = result
-    setModelsFolderPath()
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-onMounted(() => {
-  getModelsFolderPath()
-})
+  const onOpenFolderDialog = async () => {
+    try {
+      const result = await window.electron.ipcRenderer.invoke('open-folder-dialog');
+      if (!result) return;
+      await setModelsFolderPath(result);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 </script>
 
 <template>
   <div>
     <h3 class="text-lg font-medium">Local Storage</h3>
-    <p class="text-sm text-muted-foreground">
+    <p class="text-muted-foreground text-sm">
       Update your local storage settings. Set your AI Models storage location.
     </p>
   </div>
   <Separator />
   <div>
-    <FormField v-slot="{ componentField }" v-model="modelsFolderPath" name="folder">
+    <FormField v-slot="{ componentField }" v-model="model.modelsFolderPath" name="folder">
       <FormItem>
         <FormLabel>AI Models Folder</FormLabel>
         <FormControl>

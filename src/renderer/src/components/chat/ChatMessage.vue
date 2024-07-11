@@ -64,7 +64,7 @@
           :id="`chat-message-${id}`"
           v-dompurify-html="render(content)"
           :contenteditable="isEditable"
-          class="prose prose-slate rounded-lg outline-none"
+          class="prose prose-slate break-words rounded-lg outline-none"
           :class="{ 'border p-4 outline outline-slate-100': isEditable }"
           @input="(event) => updateTempMessage(event)"
         ></div>

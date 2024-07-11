@@ -39,6 +39,7 @@
         <!-- li class="group flex cursor-pointer items-center justify-center pb-2" @click="$router.push('/files')">
           <NavIcon title="Files" icon-name="folder" :is-active="$router.currentRoute.value.path === '/files'" />
         </!-->
+
         <li
           class="group flex cursor-pointer items-center justify-center pb-2"
           @click="$router.push('/models')"
@@ -49,16 +50,18 @@
             :is-active="$router.currentRoute.value.path === '/models'"
           />
         </li>
-        <!-- li
-        class="group flex cursor-pointer items-center justify-center pt-2"
-        @click="$router.push('/files')"
-      >
-        <NavIcon
-          title="Files"
-          icon-name="files"
-          :is-active="$router.currentRoute.value.path === '/files'"
-        />
-      </!-->
+        <!--
+        <li
+          class="group flex cursor-pointer items-center justify-center pt-2"
+          @click="$router.push('/chat-pdf')"
+        >
+          <NavIcon
+            title="Files"
+            icon-name="files"
+            :is-active="$router.currentRoute.value.path === '/chat-pdf'"
+          />
+        </li>
+        -->
       </ul>
     </div>
   </div>

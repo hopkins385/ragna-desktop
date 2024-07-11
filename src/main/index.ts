@@ -20,6 +20,9 @@ import { initSentry } from './handlers/sentryHandlers';
 import { handleModelPathIPCs } from './handlers/modelPathHandlers';
 import { handleModelSettingsIPCs } from './handlers/modelSettingsHandlers';
 import { createMenu } from './utils/menu';
+import { handleTransformerIPCs } from './handlers/transformerHandlers';
+import { handleAnalyticsIPCs } from './handlers/analyticsHandlers';
+import { trackEvent } from './utils/analytics';
 
 const isSingleInstance = app.requestSingleInstanceLock();
 
@@ -69,6 +72,9 @@ app.on('before-quit', async () => {
   // Close the database connection
   const db = globalDatabaseConn;
   await db.destroy();
+
+  // track close app event
+  await trackShutdownEvent();
 });
 
 function setAppId() {
@@ -83,6 +89,24 @@ function addDevToolsListener() {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
+}
+
+async function trackStartupEvent() {
+  if (is.dev) return;
+  try {
+    await trackEvent('app_startup');
+  } catch (e) {
+    console.error('Failed to track startup event', e);
+  }
+}
+
+async function trackShutdownEvent() {
+  if (is.dev) return;
+  try {
+    await trackEvent('app_shutdown');
+  } catch (e) {
+    console.error('Failed to track shutdown event', e);
+  }
 }
 
 function registerHandlers() {
@@ -101,6 +125,8 @@ function registerHandlers() {
   handleChatIPCs();
   handleDocumentIPCs();
   handleServerIPCs();
+  handleTransformerIPCs();
+  handleAnalyticsIPCs();
 }
 
 function logException(error: any) {
@@ -120,6 +146,7 @@ app
   .then(createMenu)
   .then(createWindow)
   // .then(initUpdater)
+  .then(trackStartupEvent)
   .then(() => {
     console.log('App is ready: arch is', process.arch);
   })

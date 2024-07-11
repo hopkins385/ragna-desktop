@@ -5,7 +5,9 @@ import {
   getLlmUseMlock,
   setLlmContextSize,
   setLlmGpuLayers,
-  setLlmUseMlock
+  setLlmUseMlock,
+  getLlmFlashAttention,
+  setLlmFlashAttention
 } from '../utils/llm-settings';
 
 export function handleModelSettingsIPCs() {
@@ -15,4 +17,8 @@ export function handleModelSettingsIPCs() {
   ipcMain.handle('get-llm-gpu-layers', () => getLlmGpuLayers());
   ipcMain.handle('set-llm-use-mlock', (_, useMlock) => setLlmUseMlock(useMlock));
   ipcMain.handle('get-llm-use-mlock', () => getLlmUseMlock());
+  ipcMain.handle('set-llm-flash-attention', (_, flashAttention) =>
+    setLlmFlashAttention(flashAttention)
+  );
+  ipcMain.handle('get-llm-flash-attention', () => getLlmFlashAttention());
 }

@@ -5,7 +5,12 @@ import { getMainWindow } from '../utils/window';
 import { globalInferenceService } from '../services/inference.service';
 import { ChatRepository } from '../repositories/chat.repository';
 import { logger } from '../utils/logger';
-import { getLlmContextSize, getLlmGpuLayers, getLlmUseMlock } from '../utils/llm-settings';
+import {
+  getLlmContextSize,
+  getLlmFlashAttention,
+  getLlmGpuLayers,
+  getLlmUseMlock
+} from '../utils/llm-settings';
 
 const inferenceService = globalInferenceService;
 
@@ -39,11 +44,13 @@ export function handleInferenceIPCs() {
     const gpuLayers = getLlmGpuLayers();
     const contextSize = getLlmContextSize();
     const useMlock = getLlmUseMlock();
+    const flashAttention = getLlmFlashAttention();
     const result = await inferenceService.loadModel({
       modelPath: filePath,
       contextSize,
       gpuLayers,
-      useMlock
+      useMlock,
+      flashAttention
     });
     // console.log('Load-LLM result: ', result);
     return { success: result };

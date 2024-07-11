@@ -37,7 +37,7 @@
     null // initial state
   );
 
-  useMutationObserver(
+  /*useMutationObserver(
     chatMessagesContainerRef,
     () => {
       if (chatMessagesContainerRef.value) {
@@ -48,7 +48,7 @@
       childList: true,
       subtree: true
     }
-  );
+  );*/
 
   function dateForHumans(dateValue: string) {
     // data should look like this: 16.06.2024, 17:55
@@ -120,7 +120,7 @@
       <div
         id="chatMessagesContainer"
         ref="chatMessagesContainerRef"
-        class="no-scrollbar col-span-7 h-[calc(100vh-200px)] overflow-y-scroll rounded-lg border pr-5"
+        class="no-scrollbar col-span-7 h-[calc(100vh-300px)] overflow-y-scroll rounded-lg border pr-5"
       >
         <ChatMessage
           v-for="m in chat?.messages"

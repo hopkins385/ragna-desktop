@@ -38,3 +38,13 @@ export function setLlmUseMlock(useMlock: boolean): void {
   const store = getAppStorage();
   store.set('use_mlock', Boolean(useMlock));
 }
+
+export function getLlmFlashAttention(): boolean {
+  const store = getAppStorage();
+  return store.get('flash_attention', false) as boolean;
+}
+
+export function setLlmFlashAttention(flashAttention: boolean): void {
+  const store = getAppStorage();
+  store.set('flash_attention', flashAttention);
+}

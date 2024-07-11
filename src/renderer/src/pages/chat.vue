@@ -9,8 +9,6 @@
   import { useChatStore } from '@renderer/stores/chat.store';
   import { useModelStore } from '@renderer/stores/model.store';
   import ChatMessage from '@renderer/components/chat/ChatMessage.vue';
-  import LLMSelector from '@renderer/components/llm/LLMSelector.vue';
-  import ChatSettingsDropdown from '@renderer/components/chat/ChatSettingsDropdown.vue';
   import ChatSystemPrompt from '@renderer/components/chat/ChatSystemPrompt.vue';
   import ChatExamples from '@renderer/components/chat/ChatExamples.vue';
   import ChatWelcome from '@renderer/components/chat/ChatWelcome.vue';
@@ -19,14 +17,12 @@
   import { useScroll as useVueUseScroll } from '@vueuse/core';
   import useDocuments from '@renderer/composables/useDocuments';
   import useToast from '@renderer/composables/useToast';
-  // import { Loader2Icon, Paperclip } from 'lucide-vue-next';
-  import useEmbeddings from '@renderer/composables/useEmbeddings';
+  import { Loader2Icon, Paperclip } from 'lucide-vue-next';
   import useHostFiles from '@renderer/composables/useHostFiles';
   import AttachedFile from '@renderer/components/attached/AttachedFile.vue';
+  import { useGlobalEmbeddings } from '@renderer/composables/useGlobalEmbeddings';
 
   const {
-    onLoadModel,
-    onEjectModel,
     submitUserInput,
     onRunExample,
     onStopStreaming,
@@ -36,7 +32,6 @@
     registerIsStreamingListener,
     removeIsStreamingListener,
     removeStreamResponseListener,
-    onAbortLoadingModel,
     assistantIsThinking,
     isStreaming,
     streamResponse,
@@ -53,7 +48,8 @@
   const toast = useToast();
 
   const { getFirstDocument } = useDocuments();
-  const { embedFile, similaritySearch, embeddingIsLoading, searchIsLoading } = useEmbeddings();
+  const { embedFile, similaritySearch, embeddingIsLoading, searchIsLoading } =
+    useGlobalEmbeddings();
   const { openFileDialog, fileDialogIsLoading } = useHostFiles();
 
   const submitLocked = computed(() => {
@@ -71,7 +67,7 @@
 
   const embeddingLocked = computed(() => {
     return (
-      model.isModelLoaded === false ||
+      // model.isModelLoaded === false ||
       model.isModelLoadingInProgress === true ||
       isStreaming.value === true ||
       assistantIsThinking.value === true ||
@@ -82,12 +78,6 @@
 
   const showExampleInputs = computed(() => {
     return chat.hasMessages === false && model.isModelLoaded === true;
-  });
-
-  const loadModelLocked = computed(() => {
-    return (
-      !model.modelPath || model.isModelLoaded === true || model.isModelLoadingInProgress === true
-    );
   });
 
   const showWelcome = computed(() => {
@@ -133,9 +123,9 @@
     let res: string | undefined = undefined;
     if (submitLocked.value) return;
     if (userInput.value.trim() === '') return;
-    // if (hasAttachedDocument.value) {
-    //   res = await similaritySearch({ query: userInput.value });
-    // }
+    if (hasAttachedDocument.value) {
+      res = await similaritySearch({ query: userInput.value });
+    }
     await submitUserInput({ context: res });
   }
 
@@ -148,6 +138,7 @@
       toast.error({ message: 'Please load a model first' });
       return;
     }
+    // TODO: this might be not needed
     if (fileDialogIsLoading.value || embeddingIsLoading.value || model.isModelLoadingInProgress)
       return;
 
@@ -155,6 +146,7 @@
     if (!path) return;
 
     try {
+      // embed the file
       await embedFile(path);
     } catch (error) {
       console.error(error);
@@ -186,44 +178,8 @@
 
 <template>
   <LayoutDefault class="h-full">
-    <div class="mt-5 flex w-full items-center border-0">
-      <!-- AI Model Selector -->
-      <div class="mx-5 flex w-full items-center space-x-5 text-slate-600">
-        <div class="-ml-3 whitespace-nowrap text-sm">AI Model:</div>
-        <div class="grow">
-          <LLMSelector
-            v-model="model.modelPath"
-            :disabled="model.isModelLoaded || model.isModelLoadingInProgress"
-          />
-        </div>
-
-        <Button
-          v-if="!model.isModelLoaded && !model.isModelLoadingInProgress"
-          variant="outline"
-          :disabled="loadModelLocked"
-          class="shrink-0"
-          @click="() => onLoadModel(model.modelPath)"
-        >
-          <Icon name="play" class="mr-2 size-4 stroke-2" />
-          Load
-        </Button>
-        <Button
-          v-else-if="model.isModelLoadingInProgress"
-          variant="outline"
-          class="shrink-0"
-          @click="() => onAbortLoadingModel()"
-        >
-          <Icon name="loading" class="stroke-1.5 my-2 size-4 animate-spin" />
-        </Button>
-        <Button v-else variant="outline" class="shrink-0" @click="onEjectModel">
-          <Icon name="eject" class="mr-2 size-4 -rotate-90 stroke-2" />
-          Eject
-        </Button>
-      </div>
-      <ChatSettingsDropdown />
-    </div>
     <!-- Reset Chat -->
-    <div v-if="chat.hasMessages" class="absolute right-10 top-20 z-10 flex border-0 p-4">
+    <div v-if="chat.hasMessages" class="absolute right-10 top-5 z-10 flex p-4">
       <Button
         class="group shrink-0 cursor-pointer"
         variant="ghost"
@@ -236,7 +192,7 @@
         />
       </Button>
     </div>
-    <div v-if="hasAttachedDocument || embeddingIsLoading" class="absolute left-10 top-20 z-20">
+    <div v-if="hasAttachedDocument || embeddingIsLoading" class="absolute bottom-20 left-10 z-20">
       <AttachedFile :is-loading="embeddingIsLoading" @remove="() => (attachedDocument = null)" />
     </div>
     <!-- Chat Messages Container -->
@@ -268,7 +224,6 @@
     <!-- Input -->
     <div class="flex h-20 shrink-0 items-center justify-center">
       <!-- File Dialog -->
-      <!--
       <Button
         :disabled="embeddingLocked"
         variant="outline"
@@ -279,7 +234,7 @@
         <Loader2Icon v-if="fileDialogIsLoading" class="stroke-1.5 size-4 animate-spin" />
         <Paperclip v-else class="stroke-1.5 size-4 -rotate-45" />
       </Button>
-      -->
+
       <!-- User Input -->
       <form class="relative h-fit w-full" @submit.prevent="onSubmitUserInput">
         <Input ref="inputRef" v-model="userInput" type="text" placeholder="" class="!pr-10" />

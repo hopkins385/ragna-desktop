@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, watch } from 'vue';
+  import { ref, onMounted, watch, onBeforeMount } from 'vue';
   import { Separator } from '@ui/separator';
   import { Switch } from '@/components/ui/switch';
   import { FormControl, FormDescription, FormField, FormItem, FormLabel } from '@ui/form';
@@ -13,6 +13,7 @@
   const hasGpu = ref(true);
   const contextSize = ref('auto');
   const useMlock = ref(false);
+  const flashAttention = ref(false);
   const model = useModelStore();
   // const { getGpuInfo } = useGpuHardware()
 
@@ -64,6 +65,34 @@
     }
   }
 
+  async function handleFlashAttentionChange(checked: boolean) {
+    try {
+      flashAttention.value = checked;
+      await window.electron.ipcRenderer.invoke('set-llm-flash-attention', checked);
+      const message = checked ? 'enabled' : 'disabled';
+      if (model.isModelLoaded) {
+        toast.info('Please restart the AI model for the changes to take effect.', {
+          duration: 6000
+        });
+      } else {
+        toast.success(`Flash attention ${message}`);
+      }
+    } catch (error) {
+      console.error('Error setting flash attention', error);
+      toast.error('Error setting flash attention');
+    }
+  }
+
+  async function getFlashAttention() {
+    try {
+      const flashAttention = await window.electron.ipcRenderer.invoke('get-llm-flash-attention');
+      return flashAttention;
+    } catch (error) {
+      console.error('Error getting flash attention', error);
+      return false;
+    }
+  }
+
   async function getUseMlock() {
     try {
       const useMlock = await window.electron.ipcRenderer.invoke('get-llm-use-mlock');
@@ -111,11 +140,19 @@
   //   async (value) => await updateContextSize(value)
   // );
 
-  onMounted(async () => {
-    gpuAcceleration.value = await getGpuAccelerationState();
-    // contextSize.value = await getContextSize();
-    useMlock.value = await getUseMlock();
-    // await initGpuInfo()
+  async function initValues() {
+    const gpuAcc = getGpuAccelerationState();
+    const mlock = getUseMlock();
+    const flashAtt = getFlashAttention();
+
+    const res = await Promise.all([gpuAcc, mlock, flashAtt]);
+    gpuAcceleration.value = res[0];
+    useMlock.value = res[1];
+    flashAttention.value = res[2];
+  }
+
+  onBeforeMount(async () => {
+    await initValues();
   });
 </script>
 
@@ -165,13 +202,29 @@
       </FormControl>
     </FormItem>
   </FormField>
+  <FormField name="flashAttention">
+    <FormItem class="relative flex flex-row items-center justify-between rounded-lg border p-4">
+      <div class="space-y-0.5">
+        <FormLabel class="text-base"> Flash Attention (Experimental) </FormLabel>
+        <FormDescription class="pr-10">
+          Flash attention is an optimization in the attention mechanism that makes inference faster,
+          more efficient and uses less memory. The support for flash attention is currently
+          experimental and may not always work as expected. Use with caution. This option will be
+          ignored if flash attention is not supported by the model.
+        </FormDescription>
+      </div>
+      <FormControl>
+        <Switch :checked="flashAttention" @update:checked="handleFlashAttentionChange" />
+      </FormControl>
+    </FormItem>
+  </FormField>
   <FormField name="contextSize">
     <FormItem class="relative flex flex-row items-center justify-between rounded-lg border p-4">
       <div class="space-y-0.5">
         <FormLabel class="text-base"> LLM Context Size </FormLabel>
         <FormDescription class="pr-10">
           The higher the context size, the more tokens the model can process. <br />Auto: Adapt to
-          the current available VRAM and attemp to set the context size as high as possible up to
+          the current available VRAM and attempt to set the context size as high as possible up to
           the size the model was trained on.
         </FormDescription>
       </div>
