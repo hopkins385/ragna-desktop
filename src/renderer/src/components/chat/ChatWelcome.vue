@@ -10,7 +10,7 @@
     SquareMousePointerIcon
   } from 'lucide-vue-next';
 
-  const emailHref = 'mailto:hello@ragna.app';
+  const extLinkHref = 'https://svenson.ai';
 </script>
 
 <template>
@@ -44,7 +44,7 @@
               improved efficiency.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" :href="emailHref">More Info</a>
+              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>
@@ -58,7 +58,7 @@
               powered prototypes to create new customer and employee experiences.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" :href="emailHref">More Info</a>
+              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>
@@ -72,7 +72,7 @@
               technology tailored to your business requirements.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" :href="emailHref">More Info</a>
+              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>
@@ -86,7 +86,7 @@
               unlocking new opportunities for your business.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" :href="emailHref">More Info</a>
+              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>
@@ -100,7 +100,7 @@
               results.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" :href="emailHref">More Info</a>
+              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>
@@ -114,7 +114,7 @@
               requirements.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" :href="emailHref">More Info</a>
+              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>

@@ -1,15 +1,19 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { onMounted, ref } from 'vue';
   import { ExternalLinkIcon } from 'lucide-vue-next';
   import LayoutDefault from '@/layout/LayoutDefault.vue';
 
   const version = ref<string>('');
 
-  const getAppVersion = async () => {
-    version.value = await window.electron.ipcRenderer.invoke('get-app-version');
-  };
+  function getAppVersion() {
+    return window.electron.ipcRenderer.invoke('get-app-version');
+  }
 
-  getAppVersion();
+  onMounted(async () => {
+    version.value = await getAppVersion();
+  });
+
+  const buyLicenseHref = 'mailto:info@ragna.app?subject=Commercial License';
 </script>
 
 <template>
@@ -52,6 +56,14 @@
           <p class="pt-1 text-sm">
             Non Commercial License.<br />Only for private or educational use.
           </p>
+          <a
+            :href="buyLicenseHref"
+            target="_blank"
+            class="flex items-center pt-1 text-sm text-blue-800 hover:underline"
+          >
+            Buy a commercial license
+            <ExternalLinkIcon class="stroke-1.5 ml-1 size-3" />
+          </a>
         </div>
         <div>
           <p class="font-semibold">Version</p>
