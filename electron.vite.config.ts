@@ -9,10 +9,16 @@ import svgLoader from 'vite-svg-loader';
 
 export default defineConfig({
   main: {
-    plugins: [swcPlugin(), externalizeDepsPlugin()] // swc is required because of the typeorm package
+    plugins: [swcPlugin(), externalizeDepsPlugin()], // swc is required because of the typeorm package
+    build: {
+      minify: true
+    }
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    build: {
+      minify: true
+    }
   },
   renderer: {
     css: {
@@ -29,6 +35,10 @@ export default defineConfig({
         '@composables': resolve('src/renderer/src/composables'),
         '@lib': resolve('src/renderer/src/lib')
       }
+    },
+    build: {
+      minify: true,
+      chunkSizeWarningLimit: 1024
     }
   }
 });
