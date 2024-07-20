@@ -51,28 +51,32 @@ jobs:
       #     timestamp-rfc3161: http://timestamp.acs.microsoft.com
       #     timestamp-digest: SHA256
 
-      - name: Build Mac
-        if: matrix.os == 'macos-latest'
-        run: npm run build:mac
-        env:
-          APP_ARCH: 'arm64'
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - name: Make dir for upload
+        run: mkdir upload
 
-      - name: Upload to R2
-        uses: hopkins385/r2-upload-action@0.1.0
+      - name: Copy exe to upload
+        if: matrix.os == 'windows-latest'
+        run: copy dist\*.exe upload
+
+      - name: Archive production artifacts
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
         with:
-          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
-          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          r2-bucket: ${{ secrets.R2_BUCKET }}
-          source-dir: dist/
-          destination-dir: win
-        env:
-          #NODE_OPTIONS: --max-old-space-size=4096
-          NODE_OPTIONS: '--max_old_space_size=4096'
+          name: artifacts-win
+          path: upload
+
+      # - name: Upload to R2
+      #   uses: hopkins385/r2-upload-action@0.1.0
+      #   with:
+      #     r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+      #     r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+      #     r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      #     r2-bucket: ${{ secrets.R2_BUCKET }}
+      #     source-dir: dist/
+      #     destination-dir: win
+      #   env:
+      #     #NODE_OPTIONS: --max-old-space-size=4096
+      #     NODE_OPTIONS: '--max_old_space_size=4096'
 
       # - name: Create release
       #   uses: actions/create-release@v1
