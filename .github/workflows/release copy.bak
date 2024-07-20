@@ -61,6 +61,31 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
+      - name: Make dir for upload
+        run: mkdir upload
+
+      - name: Copy dmg to upload
+        if: matrix.os == 'macos-latest'
+        run: cp dist/*.dmg upload
+
+      - name: Archive production artifacts
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-mac
+          path: upload
+
+      - name: Copy exe to upload
+        if: matrix.os == 'windows-latest'
+        run: copy dist\*.exe upload
+
+      - name: Archive production artifacts
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-win
+          path: upload
+
       - name: Upload to R2
         uses: ryand56/r2-upload-action@latest
         with:
@@ -69,7 +94,7 @@ jobs:
           r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           r2-bucket: ${{ secrets.R2_BUCKET }}
           source-dir: dist/
-          destination-dir: win
+          destination-dir: ./
 
       # - name: Create release
       #   uses: actions/create-release@v1
