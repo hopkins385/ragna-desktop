@@ -29,21 +29,43 @@
     items.value.length > 0 ? 'Select a model ...' : 'No models found'
   );
 
+  async function initModels() {
+    console.log('Fetching models');
+    try {
+      items.value = await fetchModels();
+    } catch (error) {
+      console.error('Error fetching models', error);
+    }
+  }
+
   watch(
     () => props.modelsFolderPath,
     async () => {
-      items.value = await fetchModels();
+      if (props.modelsFolderPath) {
+        await initModels();
+      }
     },
-    { immediate: true }
+    { immediate: false }
   );
 
   onMounted(async () => {
-    items.value = await fetchModels();
+    await initModels();
+
+    window.electron.ipcRenderer.on('download-completed', async () => {
+      await initModels();
+    });
   });
 </script>
 
 <template>
-  <Select v-model="modelValue">
+  <Select
+    v-model="modelValue"
+    @update:open="
+      (v) => {
+        if (v === true) initModels();
+      }
+    "
+  >
     <SelectTrigger :disabled="disabled">
       <SelectValue :placeholder="placeholder" />
     </SelectTrigger>

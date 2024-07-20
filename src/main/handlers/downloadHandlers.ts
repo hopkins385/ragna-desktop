@@ -61,7 +61,7 @@ function createDownloadHfModel(payload: DownloadHfModelPayload) {
     })
     .on('end', () => {
       const mainWindow = getMainWindow();
-      mainWindow.webContents.send('download-completed', { id });
+      mainWindow.webContents.send('download-completed', { id: payload.id });
     })
     .on('close', () => {
       /*console.log('this close event will be fired after when instance is stopped (destroyed)')

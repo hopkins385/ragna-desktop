@@ -10,7 +10,7 @@
     SquareMousePointerIcon
   } from 'lucide-vue-next';
 
-  const extLinkHref = 'https://svenson.ai';
+  const extLinkHref = 'https://svenson.ai/?mtm_campaign=ragna-desktop&mtm_source=desktop-app';
 </script>
 
 <template>
@@ -44,7 +44,12 @@
               improved efficiency.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
+              <a
+                class="hover:underline"
+                target="_blank"
+                :href="`${extLinkHref}&mtm_kwd=process-automation-consulting`"
+                >More Info</a
+              >
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>
@@ -58,7 +63,12 @@
               powered prototypes to create new customer and employee experiences.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
+              <a
+                class="hover:underline"
+                target="_blank"
+                :href="`${extLinkHref}&mtm_kwd=design-thinking-workshops`"
+                >More Info</a
+              >
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>
@@ -72,7 +82,12 @@
               technology tailored to your business requirements.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
+              <a
+                class="hover:underline"
+                target="_blank"
+                :href="`${extLinkHref}&mtm_kwd=tailored-know-how-transfer`"
+                >More Info</a
+              >
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>
@@ -86,7 +101,12 @@
               unlocking new opportunities for your business.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
+              <a
+                class="hover:underline"
+                target="_blank"
+                :href="`${extLinkHref}&mtm_kwd=proof-of-concept`"
+                >More Info</a
+              >
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>
@@ -100,7 +120,12 @@
               results.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
+              <a
+                class="hover:underline"
+                target="_blank"
+                :href="`${extLinkHref}&mtm_kwd=turnkey-software-solutions`"
+                >More Info</a
+              >
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>
@@ -114,7 +139,12 @@
               requirements.
             </p>
             <span class="flex items-center space-x-1 opacity-75">
-              <a class="hover:underline" target="_blank" :href="extLinkHref">More Info</a>
+              <a
+                class="hover:underline"
+                target="_blank"
+                :href="`${extLinkHref}&mtm_kwd=software-systems-engineering`"
+                >More Info</a
+              >
               <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
             </span>
           </div>

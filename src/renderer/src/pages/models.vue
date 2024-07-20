@@ -76,23 +76,11 @@
     downloads.updateDownloadProgress(id, progress, speed);
   }
 
-  // Listen for download finish
-  function onDownloadCompleted(payload: any) {
-    const { id } = payload;
-    // downloads.removePendingDownload(id)
-  }
-
   let downloadProgressListenerRef: any;
-  let downloadCompleteListenerRef: any;
 
   function removeDownloadProgressListener() {
     if (!downloadProgressListenerRef) return;
     downloadProgressListenerRef();
-  }
-
-  function removeDownloadCompleteListener() {
-    if (!downloadCompleteListenerRef) return;
-    downloadCompleteListenerRef();
   }
 
   onMounted(async () => {
@@ -101,15 +89,10 @@
       'download-progress',
       (_, payload) => onDownloadProgress(payload)
     );
-    downloadCompleteListenerRef = window.electron.ipcRenderer.on(
-      'download-completed',
-      (_, payload) => onDownloadCompleted(payload)
-    );
   });
 
   onUnmounted(() => {
     removeDownloadProgressListener();
-    removeDownloadCompleteListener();
   });
 </script>
 
