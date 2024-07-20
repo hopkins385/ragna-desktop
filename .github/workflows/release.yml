@@ -62,7 +62,7 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
       - name: Upload to R2
-        uses: ryand56/r2-upload-action@latest
+        uses: hopkins385/r2-upload-action@latest
         with:
           r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
           r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -71,7 +71,8 @@ jobs:
           source-dir: dist/
           destination-dir: win
         env:
-          NODE_OPTIONS: --max-old-space-size=4096
+          #NODE_OPTIONS: --max-old-space-size=4096
+          NODE_OPTIONS: '--max_old_space_size=4096'
 
       # - name: Create release
       #   uses: actions/create-release@v1
