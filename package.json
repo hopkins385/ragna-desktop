@@ -53,7 +53,7 @@
     "mammoth": "^1.8.0",
     "markdown-it": "^14.1.0",
     "matomo-tracker": "^2.2.4",
-    "node-llama-cpp": "^3.0.0-beta.38",
+    "node-llama-cpp": "^3.0.0-beta.39",
     "pdf2json": "^3.1.3",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
