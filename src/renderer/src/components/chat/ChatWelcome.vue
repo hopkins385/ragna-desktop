@@ -22,8 +22,9 @@
         </div>
         <h1 class="text-3xl font-semibold">RAGNA Desktop</h1>
       </div>
-      <p class="text-xl">My Private Artificial Intelligence. 100% Private. 100% Secure.</p>
+      <p class="text-xl">My 100% Private Artificial Intelligence</p>
     </div>
+    <!--
     <div class="container mx-auto py-10 text-[#05154e]">
       <div class="mx-auto w-fit rounded-md border-0 p-5 text-sm">
         <div class="pb-10 text-center">
@@ -151,5 +152,6 @@
         </div>
       </div>
     </div>
+    -->
   </div>
 </template>
