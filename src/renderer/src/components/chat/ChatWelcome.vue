@@ -10,7 +10,7 @@
     SquareMousePointerIcon
   } from 'lucide-vue-next';
 
-  const extLinkHref = 'https://svenson.ai/?mtm_campaign=ragna-desktop&mtm_source=desktop-app';
+  const extLinkHref = 'https://ragna-ai.com/?mtm_campaign=ragna-desktop&mtm_source=desktop-app';
 </script>
 
 <template>
@@ -23,6 +23,12 @@
         <h1 class="text-3xl font-semibold">RAGNA Desktop</h1>
       </div>
       <p class="text-xl">My 100% Private Artificial Intelligence</p>
+      <div class="mx-auto flex w-fit items-center space-x-2 border-0">
+        <a :href="extLinkHref" target="_blank" class="text-primary underline hover:font-semibold">
+          RAGNA AI
+        </a>
+        <SquareArrowOutUpRightIcon class="stroke-1.5 size-3" />
+      </div>
     </div>
     <!--
     <div class="container mx-auto py-10 text-[#05154e]">
