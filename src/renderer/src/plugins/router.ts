@@ -14,8 +14,8 @@ const routes = [
   { path: '/about', component: About },
   { path: '/models', component: Models },
   { path: '/settings', component: Settings },
-  { path: '/editor', component: Editor },
-  { path: '/chat-pdf', component: ChatPdf },
+  // { path: '/editor', component: Editor },
+  // { path: '/chat-pdf', component: ChatPdf },
   { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
 

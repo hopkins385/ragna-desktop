@@ -15,13 +15,13 @@
   >
     <div class="flex size-full shrink-0 flex-col justify-between">
       <ul class="space-y-2 pt-8">
-        <li class="group cursor-pointer pb-2" @click="$router.push('/editor')">
+        <!-- li class="group cursor-pointer pb-2" @click="$router.push('/editor')">
           <NavIcon
             title="Editor"
             icon-name="editor"
             :is-active="$router.currentRoute.value.path === '/editor'"
           />
-        </li>
+        </!-->
         <li class="group cursor-pointer pb-2" @click="$router.push('/')">
           <NavIcon
             title="Chat"

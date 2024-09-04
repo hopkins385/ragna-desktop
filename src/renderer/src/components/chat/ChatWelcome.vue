@@ -20,7 +20,7 @@
         <div class="">
           <IconRagna class="size-12" />
         </div>
-        <h1 class="text-3xl font-semibold">RAGNA Desktop</h1>
+        <h1 class="text-3xl font-semibold">RAGNA Nano</h1>
       </div>
       <p class="text-xl">My 100% Private Artificial Intelligence</p>
       <div class="mx-auto flex w-fit items-center space-x-2 border-0">

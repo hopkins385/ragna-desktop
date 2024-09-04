@@ -1,5 +1,5 @@
 appId: com.ragna.desktop-app
-productName: RAGNA Desktop
+productName: RAGNA Nano
 directories:
   buildResources: build
 files:
@@ -15,7 +15,7 @@ asarUnpack:
   - node_modules/node-llama-cpp/bins
   - node_modules/node-llama-cpp/llama/localBuilds
 win:
-  executableName: ragna-desktop
+  executableName: ragna-nano-desktop
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

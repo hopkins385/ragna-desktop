@@ -43,7 +43,7 @@
         class="flex items-center justify-center space-x-1 whitespace-nowrap pl-2 text-sm text-neutral-300"
       >
         <div class="font-semibold tracking-wide">RAGNA</div>
-        <div class="text-neutral-400">Desktop</div>
+        <div class="text-neutral-400">Nano</div>
       </div>
     </div>
     <div class="custom-title-bar-drag-region size-full"></div>
