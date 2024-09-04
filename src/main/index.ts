@@ -82,6 +82,10 @@ function setAppId() {
   electronApp.setAppUserModelId(appId);
 }
 
+function setAppName() {
+  app.setName('RAGNA Nano');
+}
+
 function addDevToolsListener() {
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -141,6 +145,7 @@ initSentry();
 app
   .whenReady()
   .then(setAppId)
+  .then(setAppName)
   .then(addDevToolsListener)
   .then(registerHandlers)
   .then(createMenu)

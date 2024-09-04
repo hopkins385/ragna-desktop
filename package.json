@@ -1,13 +1,16 @@
 {
-  "name": "ragna-desktop",
+  "name": "ragna-nano-desktop",
   "version": "0.3.6",
-  "description": "RAGNA Nano",
+  "description": "RAGNA Nano Desktop App",
   "author": "Sven Stadhouders",
   "homepage": "https://ragna.app",
   "private": true,
   "license": "other",
   "main": "./out/main/index.js",
   "type": "module",
+  "build": {
+    "productName": "RAGNA Nano"
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts,.vue --fix",
