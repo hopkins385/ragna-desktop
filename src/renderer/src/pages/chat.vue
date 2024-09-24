@@ -224,7 +224,6 @@
     <!-- Input -->
     <div class="flex h-20 shrink-0 items-center justify-center">
       <!-- File Dialog -->
-      <!--
       <Button
         :disabled="embeddingLocked"
         variant="outline"
@@ -235,8 +234,6 @@
         <Loader2Icon v-if="fileDialogIsLoading" class="stroke-1.5 size-4 animate-spin" />
         <Paperclip v-else class="stroke-1.5 size-4 -rotate-45" />
       </Button>
-      -->
-
       <!-- User Input -->
       <form class="relative h-fit w-full" @submit.prevent="onSubmitUserInput">
         <Input ref="inputRef" v-model="userInput" type="text" placeholder="" class="!pr-10" />
