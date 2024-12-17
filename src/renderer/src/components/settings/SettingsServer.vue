@@ -66,8 +66,8 @@
     <h2 class="pb-2">Example Request</h2>
     <p class="pb-2 text-sm">[POST] http://localhost:3000/v1/chat/completions</p>
     <code>
-      <pre class="text-xs"
-        >{{ example }}
+      <pre class="text-xs">
+        {{ example }}
     </pre
       >
     </code>
