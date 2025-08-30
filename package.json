@@ -1,13 +1,42 @@
 {
-  "name": "ragna-nano-desktop",
+  "name": "ragna-desktop",
   "version": "0.5.0",
-  "description": "RAGNA Nano Desktop App",
-  "author": "Sven Stadhouders",
-  "homepage": "https://ragna.app",
-  "private": true,
-  "license": "other",
+  "description": "A powerful desktop application for document management and AI-powered chat interactions",
+  "author": {
+    "name": "Sven Stadhouders"
+  },
+  "homepage": "https://github.com/hopkins385/ragna-desktop#readme",
+  "license": "MIT",
   "main": "./out/main/index.js",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hopkins385/ragna-desktop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hopkins385/ragna-desktop/issues"
+  },
+  "keywords": [
+    "electron",
+    "vue",
+    "typescript",
+    "ai",
+    "chat",
+    "documents",
+    "pdf",
+    "nlp",
+    "embeddings",
+    "vector-search",
+    "local-ai",
+    "desktop-app",
+    "document-management",
+    "langchain",
+    "transformers"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts,.vue --fix",
