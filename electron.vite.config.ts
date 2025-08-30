@@ -9,7 +9,10 @@ import svgLoader from 'vite-svg-loader';
 
 export default defineConfig({
   main: {
-    plugins: [swcPlugin(), externalizeDepsPlugin()], // swc is required because of the typeorm package
+    plugins: [
+      swcPlugin(), // swc is required because of the typeorm package
+      externalizeDepsPlugin()
+    ],
     build: {
       minify: true
     }

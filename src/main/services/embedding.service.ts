@@ -1,10 +1,10 @@
-import type { Connection, EmbeddingFunction } from 'vectordb';
-import { MetricType } from 'vectordb';
+import type { Connection } from '@lancedb/lancedb';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { FileParserFactory } from '../factories/fileParserFactory';
 import { DocumentService } from './document.service';
 import { PipelineSingleton } from './transformer.service';
 import { is } from '@electron-toolkit/utils';
+import { EmbeddingFunction } from '@lancedb/lancedb/embedding';
 // import { Schema, Field, Float32, FixedSizeList, Int32, Float16 } from 'apache-arrow'
 
 interface SimilaritySearchResult {
@@ -17,7 +17,7 @@ interface FileContents {
   content: string;
 }
 
-const embedFn = {} as EmbeddingFunction<unknown>;
+const embedFn = {} as EmbeddingFunction<any>;
 async function getEmbedFunction() {
   if (embedFn.sourceColumn) {
     return embedFn;
@@ -83,12 +83,9 @@ export class EmbeddingService {
     const embeddingFn = await getEmbedFunction();
     const table = await this.vectorDb.openTable(this.defaultTableName, embeddingFn);
 
-    const dbQuery = table
-      .search(payload.query)
-      .metricType(MetricType.Cosine)
-      .limit(payload.limit ?? 2);
+    const dbQuery = table.search(payload.query).limit(payload.limit ?? 2);
 
-    const results = await dbQuery.execute();
+    const results = await dbQuery.toArray();
 
     if (!results) {
       return [];

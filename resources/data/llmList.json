@@ -1,7 +1,27 @@
 [
   {
+    "id": "01J3W8A5ZSDM4259WW571KGPY5",
+    "title": "Microsoft - Phi 4",
+    "details": {
+      "description": "phi-4 is a state-of-the-art open model built upon a blend of synthetic datasets, data from filtered public domain websites, and acquired academic books and Q&A datasets.",
+      "quant": "4bit",
+      "format": "gguf",
+      "model_paramaters": 140,
+      "prompt_template": "",
+      "repo_link": "https://huggingface.co/microsoft/phi-4-gguf",
+      "license": "MIT",
+      "languages": ["en"]
+    },
+    "hf_params": {
+      "owner": "microsoft",
+      "repo": "phi-4-gguf",
+      "file": "phi-4-q4.gguf",
+      "file_size": 905
+    }
+  },
+  {
     "id": "01J3W8A5ZSDM4259WW571KGPY4",
-    "title": "Meta - Llama 3.1 128K Abliterated",
+    "title": "Meta - Llama 3.1 Abliterated",
     "details": {
       "description": "This is an uncensored version of Llama 3.1 8B Instruct created with abliteration.",
       "quant": "8bit",
@@ -21,7 +41,7 @@
   },
   {
     "id": "01HNQKEAKBGQ7Q8HBVMXFZJW1Q",
-    "title": "Meta - Llama 3 8K Instruct",
+    "title": "Meta - Llama 3 Instruct",
     "details": {
       "description": "The Llama 3 instruction tuned models are optimized for dialogue use cases and outperform many of the available open source chat models on common industry benchmarks.",
       "quant": "8bit",
@@ -36,26 +56,6 @@
       "owner": "Svensonai",
       "repo": "Meta-Llama-3-8B-Instruct-gguf",
       "file": "Meta-Llama-3-8B-Instruct_q8_0.gguf",
-      "file_size": 854
-    }
-  },
-  {
-    "id": "01HNQKVAKBGQ7Q8HBVMXFZJW1Q",
-    "title": "DiscoResearch - Llama3-DiscoLeo-Instruct 8K",
-    "details": {
-      "description": "Llama3-DiscoLeo-Instruct 8B is an instruction tuned version of our Llama3-German-8B. The base model was derived from Meta's Llama3-8B through continuous pretraining on 65 billion high-quality German tokens, similar to previous LeoLM or Occiglot models. We finetuned this checkpoint on the German Instruction dataset",
-      "quant": "8bit",
-      "format": "gguf",
-      "model_paramaters": 80,
-      "prompt_template": "llama3",
-      "repo_link": "https://huggingface.co/DiscoResearch/Llama3-DiscoLeo-Instruct-8B-v0.1",
-      "license": "llama3",
-      "languages": ["de", "en"]
-    },
-    "hf_params": {
-      "owner": "Svensonai",
-      "repo": "Llama3-DiscoLeo-Instruct-8B-v0.1-GGUF",
-      "file": "Llama3-DiscoLeo-Instruct-8B-v0.1_q8_0.gguf",
       "file_size": 854
     }
   },

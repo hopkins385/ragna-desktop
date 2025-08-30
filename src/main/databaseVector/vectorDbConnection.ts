@@ -1,4 +1,4 @@
-import * as lancedb from 'vectordb';
+import * as lancedb from '@lancedb/lancedb';
 import { getVectorDbPath } from '../utils/path';
 import { logger } from '../utils/logger';
 
